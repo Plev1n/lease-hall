@@ -1,0 +1,12 @@
+{
+  "name": "lease-hall",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Průmyslový areál Frýdlant nad Ostravicí — pronájem hal a prostor",
+  "scripts": {
+    "dev": "vercel dev"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.0"
+  }
+}

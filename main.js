@@ -30,6 +30,10 @@ const HALLS = [
 const PRICE_PER_M2 = 100;       // CZK bez DPH
 const PRICE_PER_M2_VAT = 121;   // CZK s DPH
 
+// ── Config ──────────────────────────────────
+const RECAPTCHA_SITE_KEY = 'RECAPTCHA_SITE_KEY_HERE'; // Replace with real key
+const API_ENDPOINT = '/api/submit';
+
 // ── Helpers ─────────────────────────────────
 function fmt(n) {
     return n.toLocaleString('cs-CZ');
@@ -203,8 +207,6 @@ function initModal() {
 // ── Form Handling ───────────────────────────
 function showFormSuccess(form) {
     const wrapper = form.parentElement;
-    const title = form.querySelector('.contact-form__title, .modal-form__title');
-    const titleText = title ? title.textContent : '';
 
     form.style.display = 'none';
 
@@ -226,18 +228,104 @@ function showFormSuccess(form) {
     }, 4000);
 }
 
+function showFormError(form, message) {
+    let errEl = form.querySelector('.form-error');
+    if (!errEl) {
+        errEl = document.createElement('div');
+        errEl.className = 'form-error';
+        errEl.style.cssText = 'background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#ef4444;padding:12px 16px;border-radius:8px;font-size:0.9rem;margin-bottom:16px;';
+        form.prepend(errEl);
+    }
+    errEl.textContent = message;
+    setTimeout(() => errEl.remove(), 5000);
+}
+
+function setSubmitting(form, loading) {
+    const btn = form.querySelector('button[type="submit"]');
+    if (loading) {
+        btn.dataset.originalText = btn.textContent;
+        btn.textContent = 'Odesílám...';
+        btn.disabled = true;
+        btn.style.opacity = '0.6';
+    } else {
+        btn.textContent = btn.dataset.originalText || 'Odeslat poptávku';
+        btn.disabled = false;
+        btn.style.opacity = '';
+    }
+}
+
+async function getRecaptchaToken(action) {
+    if (typeof grecaptcha === 'undefined' || RECAPTCHA_SITE_KEY === 'RECAPTCHA_SITE_KEY_HERE') {
+        return '';
+    }
+    try {
+        await grecaptcha.ready(() => {});
+        return await grecaptcha.execute(RECAPTCHA_SITE_KEY, { action });
+    } catch (err) {
+        console.warn('reCAPTCHA error:', err);
+        return '';
+    }
+}
+
+async function submitForm(form, action) {
+    setSubmitting(form, true);
+
+    const formData = new FormData(form);
+    const data = {
+        name: formData.get('name') || '',
+        email: formData.get('email') || '',
+        phone: formData.get('phone') || '',
+        hall: formData.get('hall') || '',
+        message: formData.get('message') || '',
+    };
+
+    try {
+        data.recaptchaToken = await getRecaptchaToken(action);
+
+        const res = await fetch(API_ENDPOINT, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data),
+        });
+
+        const result = await res.json();
+
+        if (!res.ok) {
+            throw new Error(result.error || 'Chyba při odesílání.');
+        }
+
+        // Push conversion event to dataLayer for GTM
+        if (window.dataLayer) {
+            window.dataLayer.push({
+                event: 'form_submission',
+                form_action: action,
+                hall: data.hall || 'general',
+            });
+        }
+
+        showFormSuccess(form);
+        return true;
+    } catch (err) {
+        console.error('Form submit error:', err);
+        showFormError(form, err.message || 'Nepodařilo se odeslat. Zkuste to znovu nebo nás kontaktujte telefonicky.');
+        return false;
+    } finally {
+        setSubmitting(form, false);
+    }
+}
+
 function initForms() {
     // Main contact form
     document.getElementById('contact-form').addEventListener('submit', (e) => {
         e.preventDefault();
-        showFormSuccess(e.target);
+        submitForm(e.target, 'contact_form');
     });
 
     // Modal form
-    document.getElementById('modal-form').addEventListener('submit', (e) => {
+    document.getElementById('modal-form').addEventListener('submit', async (e) => {
         e.preventDefault();
-        showFormSuccess(e.target);
-        setTimeout(closeModal, 2000);
+        const ok = await submitForm(e.target, 'modal_inquiry');
+        if (ok) setTimeout(closeModal, 2000);
     });
 }
 
