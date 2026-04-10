@@ -150,17 +150,10 @@
             </div>
             <div class="map-wrapper">
                 <div class="map-wrapper__blueprint-label">SITUAČNÍ PLÁN AREÁLU</div>
-                <svg id="areal-map" viewBox="0 0 1000 750" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Grid pattern -->
+                <svg id="areal-map" viewBox="0 0 3508 2480" xmlns="http://www.w3.org/2000/svg">
                     <defs>
-                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
-                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
-                        </pattern>
-                        <pattern id="grid-fine" width="10" height="10" patternUnits="userSpaceOnUse">
-                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.3"/>
-                        </pattern>
                         <filter id="glow">
-                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
                             <feMerge>
                                 <feMergeNode in="coloredBlur"/>
                                 <feMergeNode in="SourceGraphic"/>
@@ -168,138 +161,75 @@
                         </filter>
                     </defs>
 
-                    <!-- Background -->
-                    <rect width="1000" height="750" fill="#0e1117"/>
-                    <rect width="1000" height="750" fill="url(#grid-fine)"/>
-                    <rect width="1000" height="750" fill="url(#grid)"/>
+                    <!-- Original schema as background -->
+                    <image href="assets/map-schema.png" x="0" y="0" width="3508" height="2480"/>
 
-                    <!-- Complex boundary -->
-                    <polygon class="map-boundary"
-                        points="60,30 680,30 720,45 920,45 960,80 960,420 940,520 920,620 880,700 60,700"
-                        fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="8,4"/>
+                    <!-- === INTERACTIVE BUILDING OVERLAYS === -->
+                    <!-- Positioned over the original schema using proportional mapping -->
 
-                    <!-- Road label -->
-                    <text x="950" y="690" class="map-label map-label--road" transform="rotate(-60, 950, 690)">ul. HLAVNÍ</text>
-
-                    <!-- Entry arrow -->
-                    <path d="M 920,640 L 880,580" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
-                    <defs>
-                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
-                            <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
-                        </marker>
-                    </defs>
-                    <text x="925" y="660" class="map-label map-label--entry">VJEZD</text>
-
-                    <!-- Parking areas -->
-                    <rect class="map-parking" x="770" y="300" width="80" height="100" rx="3"/>
-                    <text x="810" y="355" class="map-label map-label--parking">P</text>
-
-                    <rect class="map-parking" x="700" y="470" width="70" height="80" rx="3"/>
-                    <text x="735" y="515" class="map-label map-label--parking">P</text>
-
-                    <rect class="map-parking" x="240" y="570" width="60" height="60" rx="3"/>
-                    <text x="270" y="605" class="map-label map-label--parking">P</text>
-
-                    <!-- === BUILDINGS === -->
-
-                    <!-- Zone 1: Right / Entrance -->
                     <g class="building" data-hall-id="1">
-                        <rect x="880" y="450" width="55" height="75" rx="2"/>
-                        <text x="907" y="493"><tspan class="building__id">1</tspan></text>
+                        <rect x="2999" y="1314" width="130" height="273" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="2">
-                        <rect x="880" y="100" width="50" height="50" rx="2"/>
-                        <text x="905" y="130"><tspan class="building__id">2</tspan></text>
+                        <rect x="3052" y="409" width="133" height="186" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="3">
-                        <rect x="860" y="330" width="50" height="70" rx="2"/>
-                        <text x="885" y="370"><tspan class="building__id">3</tspan></text>
+                        <rect x="2929" y="893" width="141" height="273" rx="4"/>
                     </g>
-
-                    <!-- Zone 2: Upper Right -->
                     <g class="building" data-hall-id="4">
-                        <rect x="760" y="100" width="90" height="80" rx="2"/>
-                        <text x="805" y="145"><tspan class="building__id">4</tspan></text>
-                    </g>
-                    <g class="building" data-hall-id="7">
-                        <rect x="740" y="270" width="40" height="45" rx="2"/>
-                        <text x="760" y="298"><tspan class="building__id">7</tspan></text>
+                        <rect x="2596" y="384" width="316" height="298" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="5">
-                        <rect x="790" y="430" width="70" height="55" rx="2"/>
-                        <text x="825" y="463"><tspan class="building__id">5</tspan></text>
-                    </g>
-
-                    <!-- Zone 3: Upper Center -->
-                    <g class="building" data-hall-id="8">
-                        <rect x="530" y="80" width="65" height="55" rx="2"/>
-                        <text x="562" y="113"><tspan class="building__id">8</tspan></text>
+                        <rect x="2649" y="1215" width="228" height="199" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="6">
-                        <rect x="660" y="140" width="50" height="50" rx="2"/>
-                        <text x="685" y="170"><tspan class="building__id">6</tspan></text>
+                        <rect x="2298" y="521" width="140" height="186" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="7">
+                        <rect x="2473" y="794" width="123" height="136" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="8">
+                        <rect x="1877" y="372" width="263" height="198" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="9">
-                        <rect x="570" y="155" width="80" height="70" rx="2"/>
-                        <text x="610" y="196"><tspan class="building__id">9</tspan></text>
-                    </g>
-                    <g class="building" data-hall-id="17">
-                        <rect x="445" y="140" width="65" height="65" rx="2"/>
-                        <text x="477" y="178"><tspan class="building__id">17</tspan></text>
-                    </g>
-
-                    <!-- Zone 4: Center -->
-                    <g class="building" data-hall-id="21">
-                        <rect x="335" y="160" width="100" height="100" rx="2"/>
-                        <text x="385" y="216"><tspan class="building__id">21</tspan></text>
+                        <rect x="1982" y="595" width="333" height="261" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="10">
-                        <rect x="570" y="250" width="105" height="90" rx="2"/>
-                        <text x="622" y="301"><tspan class="building__id">10</tspan></text>
-                    </g>
-                    <g class="building" data-hall-id="20">
-                        <rect x="335" y="275" width="100" height="90" rx="2"/>
-                        <text x="385" y="326"><tspan class="building__id">20</tspan></text>
-                    </g>
-                    <g class="building" data-hall-id="12">
-                        <rect x="680" y="340" width="45" height="45" rx="2"/>
-                        <text x="702" y="368"><tspan class="building__id">12</tspan></text>
-                    </g>
-
-                    <!-- Zone 5: Center-Lower -->
-                    <g class="building" data-hall-id="19">
-                        <rect x="350" y="385" width="95" height="85" rx="2"/>
-                        <text x="397" y="434"><tspan class="building__id">19</tspan></text>
+                        <rect x="2070" y="769" width="438" height="285" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="11">
-                        <rect x="550" y="365" width="100" height="80" rx="2"/>
-                        <text x="600" y="411"><tspan class="building__id">11</tspan></text>
+                        <rect x="2000" y="1166" width="385" height="248" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="12">
+                        <rect x="2491" y="1004" width="122" height="100" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="13">
-                        <rect x="655" y="390" width="50" height="45" rx="2"/>
-                        <text x="680" y="418"><tspan class="building__id">13</tspan></text>
-                    </g>
-
-                    <!-- Zone 6: Lower -->
-                    <g class="building" data-hall-id="16">
-                        <rect x="445" y="495" width="95" height="80" rx="2"/>
-                        <text x="492" y="541"><tspan class="building__id">16</tspan></text>
-                    </g>
-                    <g class="building" data-hall-id="18">
-                        <rect x="280" y="500" width="115" height="95" rx="2"/>
-                        <text x="337" y="554"><tspan class="building__id">18</tspan></text>
+                        <rect x="2385" y="1190" width="141" height="162" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="14">
-                        <rect x="555" y="490" width="130" height="105" rx="2"/>
-                        <text x="620" y="549"><tspan class="building__id">14</tspan></text>
+                        <rect x="2017" y="1525" width="526" height="310" rx="4"/>
                     </g>
                     <g class="building" data-hall-id="15">
-                        <rect x="720" y="530" width="110" height="85" rx="2"/>
-                        <text x="775" y="579"><tspan class="building__id">15</tspan></text>
+                        <rect x="2543" y="1513" width="351" height="260" rx="4"/>
                     </g>
-
-                    <!-- SPA for CARS label -->
-                    <text x="930" y="240" class="map-label map-label--poi">SPA for CARS</text>
+                    <g class="building" data-hall-id="16">
+                        <rect x="1614" y="1463" width="350" height="236" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="17">
+                        <rect x="1614" y="533" width="245" height="236" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="18">
+                        <rect x="1140" y="1463" width="456" height="298" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="19">
+                        <rect x="1368" y="1091" width="333" height="285" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="20">
+                        <rect x="1316" y="843" width="350" height="223" rx="4"/>
+                    </g>
+                    <g class="building" data-hall-id="21">
+                        <rect x="1298" y="570" width="316" height="273" rx="4"/>
+                    </g>
                 </svg>
 
                 <!-- Tooltip -->

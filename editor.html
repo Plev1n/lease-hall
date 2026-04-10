@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Map Overlay Editor — Drag & Resize Buildings</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; color: #fff; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; overflow: hidden; }
+
+.toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,0,0,0.95); padding: 10px 16px;
+    display: flex; align-items: center; gap: 16px; border-bottom: 1px solid #333;
+}
+.toolbar h1 { font-size: 14px; font-weight: 600; }
+.toolbar button {
+    padding: 6px 14px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-size: 12px; border: 1px solid #444;
+    background: #222; color: #fff;
+}
+.toolbar button:hover { background: #333; }
+.toolbar button.primary { background: #22c55e; color: #000; border-color: #22c55e; font-weight: 600; }
+.toolbar button.primary:hover { background: #16a34a; }
+#status { color: #888; margin-left: auto; }
+
+.sidebar {
+    position: fixed; right: 0; top: 42px; bottom: 0; width: 260px; z-index: 90;
+    background: rgba(0,0,0,0.9); border-left: 1px solid #333;
+    overflow-y: auto; padding: 12px;
+}
+.sidebar h3 { font-size: 12px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+.bld-item {
+    padding: 6px 8px; margin-bottom: 4px; border-radius: 4px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid transparent; font-size: 12px;
+}
+.bld-item:hover { background: #222; }
+.bld-item.active { border-color: #f59e0b; background: #1a1700; }
+.bld-item .id { font-weight: 700; color: #22c55e; width: 24px; }
+.bld-item.unavail .id { color: #ef4444; }
+.bld-item .name { flex: 1; color: #ccc; }
+.bld-item .coords { color: #666; font-size: 10px; }
+
+.canvas-wrap {
+    position: absolute; top: 42px; left: 0; right: 260px; bottom: 0;
+    overflow: auto; cursor: grab;
+}
+.canvas-wrap:active { cursor: grabbing; }
+.canvas {
+    position: relative; transform-origin: 0 0;
+}
+.canvas img { display: block; user-select: none; -webkit-user-drag: none; }
+
+.overlay {
+    position: absolute; border: 2px solid rgba(34, 197, 94, 0.7);
+    background: rgba(34, 197, 94, 0.15); cursor: move;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: rgba(255,255,255,0.8);
+    user-select: none; transition: border-color 0.15s;
+}
+.overlay:hover { border-color: #22c55e; background: rgba(34, 197, 94, 0.25); }
+.overlay.active { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); z-index: 10; }
+.overlay.unavail { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.1); }
+.overlay.unavail:hover { border-color: #ef4444; }
+
+.resize-handle {
+    position: absolute; width: 10px; height: 10px; background: #f59e0b; border-radius: 2px;
+}
+.resize-handle.se { right: -5px; bottom: -5px; cursor: se-resize; }
+.resize-handle.ne { right: -5px; top: -5px; cursor: ne-resize; }
+.resize-handle.sw { left: -5px; bottom: -5px; cursor: sw-resize; }
+.resize-handle.nw { left: -5px; top: -5px; cursor: nw-resize; }
+
+.zoom-controls {
+    position: fixed; bottom: 16px; left: 16px; z-index: 100;
+    display: flex; gap: 4px;
+}
+.zoom-controls button { width: 36px; height: 36px; font-size: 18px; display: flex; align-items: center; justify-content: center; }
+
+#output-modal {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.8); align-items: center; justify-content: center;
+}
+#output-modal.open { display: flex; }
+#output-modal .content {
+    background: #1a1a1a; border: 1px solid #333; border-radius: 12px;
+    padding: 24px; max-width: 700px; width: 90%; max-height: 80vh; overflow-y: auto;
+}
+#output-modal textarea {
+    width: 100%; height: 400px; background: #111; color: #22c55e; border: 1px solid #333;
+    border-radius: 8px; padding: 12px; font-family: monospace; font-size: 12px; resize: vertical;
+}
+#output-modal h2 { margin-bottom: 12px; font-size: 16px; }
+#output-modal p { color: #888; margin-bottom: 12px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <h1>Map Overlay Editor</h1>
+    <button onclick="resetZoom()">Reset Zoom</button>
+    <button onclick="fitToScreen()">Fit to Screen</button>
+    <button class="primary" onclick="exportCoords()">Export SVG Code</button>
+    <span id="status">Drag overlays to position. Corners to resize.</span>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <h3>Buildings</h3>
+    <div id="bld-list"></div>
+</div>
+
+<div class="canvas-wrap" id="canvas-wrap">
+    <div class="canvas" id="canvas">
+        <img src="assets/map-schema.png" id="map-img" draggable="false">
+    </div>
+</div>
+
+<div class="zoom-controls">
+    <button onclick="zoomIn()">+</button>
+    <button onclick="zoomOut()">−</button>
+    <span id="zoom-level" style="color:#888;padding:8px;">100%</span>
+</div>
+
+<div id="output-modal">
+    <div class="content">
+        <h2>SVG Building Overlays</h2>
+        <p>Copy this code and paste it into index.html, replacing the existing building overlays section.</p>
+        <textarea id="output-code" readonly></textarea>
+        <br><br>
+        <button onclick="document.getElementById('output-modal').classList.remove('open')" style="padding:8px 16px;border-radius:6px;background:#333;color:#fff;border:1px solid #555;cursor:pointer;">Close</button>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('output-code').value)" style="padding:8px 16px;border-radius:6px;background:#22c55e;color:#000;border:none;cursor:pointer;margin-left:8px;font-weight:600;">Copy to Clipboard</button>
+    </div>
+</div>
+
+<script>
+// Image dimensions
+const IMG_W = 3508, IMG_H = 2480;
+
+// Building data with current positions (from last calculation)
+const buildings = [
+    { id: 1,  name: "Admin. budova",    unavail: false, x: 2999, y: 1314, w: 130, h: 273 },
+    { id: 2,  name: "Trafo stanice",    unavail: true,  x: 3052, y: 409,  w: 133, h: 186 },
+    { id: 3,  name: "Garáže",           unavail: false, x: 2929, y: 893,  w: 141, h: 273 },
+    { id: 4,  name: "Hala",             unavail: false, x: 2596, y: 384,  w: 316, h: 298 },
+    { id: 5,  name: "Jídelna",          unavail: false, x: 2649, y: 1215, w: 228, h: 199 },
+    { id: 6,  name: "Stolárna",         unavail: false, x: 2298, y: 521,  w: 140, h: 186 },
+    { id: 7,  name: "Admin. budova",    unavail: false, x: 2473, y: 794,  w: 123, h: 136 },
+    { id: 8,  name: "3 patrová budova", unavail: false, x: 1877, y: 372,  w: 263, h: 198 },
+    { id: 9,  name: "2 patrová hala",   unavail: false, x: 1982, y: 595,  w: 333, h: 261 },
+    { id: 10, name: "Hala 532m²",       unavail: false, x: 2070, y: 769,  w: 438, h: 285 },
+    { id: 11, name: "Hala 660m²",       unavail: true,  x: 2000, y: 1166, w: 385, h: 248 },
+    { id: 12, name: "Admin. budova",    unavail: false, x: 2491, y: 1004, w: 122, h: 100 },
+    { id: 13, name: "Hala + voda",      unavail: true,  x: 2385, y: 1190, w: 141, h: 162 },
+    { id: 14, name: "Hala NEDOST.",     unavail: true,  x: 2017, y: 1525, w: 526, h: 310 },
+    { id: 15, name: "Zastřešená pl.",   unavail: false, x: 2543, y: 1513, w: 351, h: 260 },
+    { id: 16, name: "Hala 1500m²",      unavail: false, x: 1614, y: 1463, w: 350, h: 236 },
+    { id: 17, name: "Hala",             unavail: false, x: 1614, y: 533,  w: 245, h: 236 },
+    { id: 18, name: "Hala 1875m²",      unavail: false, x: 1140, y: 1463, w: 456, h: 298 },
+    { id: 19, name: "Hala 625m²",       unavail: false, x: 1368, y: 1091, w: 333, h: 285 },
+    { id: 20, name: "Hala 800m²",       unavail: false, x: 1316, y: 843,  w: 350, h: 223 },
+    { id: 21, name: "Hala 1400m²",      unavail: false, x: 1298, y: 570,  w: 316, h: 273 },
+];
+
+let zoom = 0.5;
+let activeId = null;
+let dragState = null;
+
+const canvas = document.getElementById('canvas');
+const canvasWrap = document.getElementById('canvas-wrap');
+const mapImg = document.getElementById('map-img');
+
+// Wait for image to load
+mapImg.onload = () => {
+    updateZoom();
+    createOverlays();
+    createSidebar();
+    fitToScreen();
+};
+if (mapImg.complete) mapImg.onload();
+
+function updateZoom() {
+    canvas.style.transform = `scale(${zoom})`;
+    canvas.style.width = IMG_W + 'px';
+    canvas.style.height = IMG_H + 'px';
+    document.getElementById('zoom-level').textContent = Math.round(zoom * 100) + '%';
+}
+
+function zoomIn() { zoom = Math.min(2, zoom + 0.1); updateZoom(); }
+function zoomOut() { zoom = Math.max(0.1, zoom - 0.1); updateZoom(); }
+function resetZoom() { zoom = 1; updateZoom(); }
+function fitToScreen() {
+    const wrapRect = canvasWrap.getBoundingClientRect();
+    zoom = Math.min(wrapRect.width / IMG_W, wrapRect.height / IMG_H) * 0.95;
+    updateZoom();
+}
+
+function createOverlays() {
+    document.querySelectorAll('.overlay').forEach(el => el.remove());
+    buildings.forEach(b => {
+        const el = document.createElement('div');
+        el.className = 'overlay' + (b.unavail ? ' unavail' : '');
+        el.dataset.id = b.id;
+        el.style.left = b.x + 'px';
+        el.style.top = b.y + 'px';
+        el.style.width = b.w + 'px';
+        el.style.height = b.h + 'px';
+        el.textContent = b.id;
+
+        // Resize handles
+        ['nw','ne','sw','se'].forEach(pos => {
+            const handle = document.createElement('div');
+            handle.className = `resize-handle ${pos}`;
+            handle.dataset.handle = pos;
+            el.appendChild(handle);
+        });
+
+        // Drag
+        el.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('resize-handle')) {
+                startResize(e, b, e.target.dataset.handle);
+            } else {
+                startDrag(e, b);
+            }
+            setActive(b.id);
+            e.stopPropagation();
+        });
+
+        canvas.appendChild(el);
+    });
+}
+
+function setActive(id) {
+    activeId = id;
+    document.querySelectorAll('.overlay').forEach(el => el.classList.toggle('active', parseInt(el.dataset.id) === id));
+    document.querySelectorAll('.bld-item').forEach(el => el.classList.toggle('active', parseInt(el.dataset.id) === id));
+    updateStatus();
+}
+
+function updateStatus() {
+    const b = buildings.find(b => b.id === activeId);
+    if (b) {
+        document.getElementById('status').textContent = `#${b.id} ${b.name} — x:${b.x} y:${b.y} w:${b.w} h:${b.h}`;
+    }
+}
+
+function startDrag(e, b) {
+    const startX = e.clientX, startY = e.clientY;
+    const origX = b.x, origY = b.y;
+
+    function onMove(e) {
+        const dx = (e.clientX - startX) / zoom;
+        const dy = (e.clientY - startY) / zoom;
+        b.x = Math.round(origX + dx);
+        b.y = Math.round(origY + dy);
+        syncOverlay(b);
+        updateStatus();
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        updateSidebarCoords(b);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+function startResize(e, b, handle) {
+    const startX = e.clientX, startY = e.clientY;
+    const origX = b.x, origY = b.y, origW = b.w, origH = b.h;
+
+    function onMove(e) {
+        const dx = (e.clientX - startX) / zoom;
+        const dy = (e.clientY - startY) / zoom;
+
+        if (handle.includes('e')) b.w = Math.max(20, Math.round(origW + dx));
+        if (handle.includes('s')) b.h = Math.max(20, Math.round(origH + dy));
+        if (handle.includes('w')) { b.x = Math.round(origX + dx); b.w = Math.max(20, Math.round(origW - dx)); }
+        if (handle.includes('n')) { b.y = Math.round(origY + dy); b.h = Math.max(20, Math.round(origH - dy)); }
+
+        syncOverlay(b);
+        updateStatus();
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+        updateSidebarCoords(b);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    e.stopPropagation();
+}
+
+function syncOverlay(b) {
+    const el = document.querySelector(`.overlay[data-id="${b.id}"]`);
+    if (el) {
+        el.style.left = b.x + 'px';
+        el.style.top = b.y + 'px';
+        el.style.width = b.w + 'px';
+        el.style.height = b.h + 'px';
+    }
+}
+
+function createSidebar() {
+    const list = document.getElementById('bld-list');
+    list.innerHTML = '';
+    buildings.forEach(b => {
+        const item = document.createElement('div');
+        item.className = 'bld-item' + (b.unavail ? ' unavail' : '');
+        item.dataset.id = b.id;
+        item.innerHTML = `
+            <span class="id">${b.id}</span>
+            <span class="name">${b.name}</span>
+            <span class="coords" id="coords-${b.id}">${b.x},${b.y}</span>
+        `;
+        item.addEventListener('click', () => {
+            setActive(b.id);
+            // Scroll the overlay into view
+            const overlay = document.querySelector(`.overlay[data-id="${b.id}"]`);
+            if (overlay) {
+                const rect = overlay.getBoundingClientRect();
+                const wrapRect = canvasWrap.getBoundingClientRect();
+                canvasWrap.scrollLeft += rect.left - wrapRect.left - wrapRect.width / 2 + rect.width / 2;
+                canvasWrap.scrollTop += rect.top - wrapRect.top - wrapRect.height / 2 + rect.height / 2;
+            }
+        });
+        list.appendChild(item);
+    });
+}
+
+function updateSidebarCoords(b) {
+    const el = document.getElementById(`coords-${b.id}`);
+    if (el) el.textContent = `${b.x},${b.y}`;
+}
+
+function exportCoords() {
+    let code = '                    <!-- === INTERACTIVE BUILDING OVERLAYS === -->\n';
+    code += '                    <!-- Positioned over the original schema -->\n\n';
+    buildings.forEach(b => {
+        code += `                    <g class="building" data-hall-id="${b.id}">\n`;
+        code += `                        <rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="4"/>\n`;
+        code += `                    </g>\n`;
+    });
+    document.getElementById('output-code').value = code;
+    document.getElementById('output-modal').classList.add('open');
+}
+
+// Canvas panning (when not on an overlay)
+let isPanning = false, panStart = {};
+canvasWrap.addEventListener('mousedown', (e) => {
+    if (e.target === canvasWrap || e.target === canvas || e.target === mapImg) {
+        isPanning = true;
+        panStart = { x: e.clientX + canvasWrap.scrollLeft, y: e.clientY + canvasWrap.scrollTop };
+        canvasWrap.style.cursor = 'grabbing';
+    }
+});
+document.addEventListener('mousemove', (e) => {
+    if (isPanning) {
+        canvasWrap.scrollLeft = panStart.x - e.clientX;
+        canvasWrap.scrollTop = panStart.y - e.clientY;
+    }
+});
+document.addEventListener('mouseup', () => {
+    isPanning = false;
+    canvasWrap.style.cursor = 'grab';
+});
+
+// Zoom with scroll wheel
+canvasWrap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    const delta = e.deltaY > 0 ? -0.05 : 0.05;
+    zoom = Math.max(0.1, Math.min(2, zoom + delta));
+    updateZoom();
+}, { passive: false });
+
+// Keyboard shortcuts
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        document.getElementById('output-modal').classList.remove('open');
+    }
+    if (!activeId) return;
+    const b = buildings.find(b => b.id === activeId);
+    if (!b) return;
+    const step = e.shiftKey ? 10 : 1;
+    if (e.key === 'ArrowLeft')  { b.x -= step; syncOverlay(b); updateStatus(); e.preventDefault(); }
+    if (e.key === 'ArrowRight') { b.x += step; syncOverlay(b); updateStatus(); e.preventDefault(); }
+    if (e.key === 'ArrowUp')    { b.y -= step; syncOverlay(b); updateStatus(); e.preventDefault(); }
+    if (e.key === 'ArrowDown')  { b.y += step; syncOverlay(b); updateStatus(); e.preventDefault(); }
+});
+</script>
+</body>
+</html>
