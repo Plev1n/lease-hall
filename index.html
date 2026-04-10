@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Průmyslový areál Frýdlant nad Ostravicí — Pronájem hal a prostor</title>
+    <meta name="description" content="Pronájem halových, kancelářských a komerčních prostor v průmyslovém areálu ve Frýdlantě nad Ostravicí. Od 100 Kč/m² bez DPH.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <!-- HERO -->
+    <header class="hero" id="hero">
+        <div class="hero__noise"></div>
+        <div class="hero__grid"></div>
+        <div class="hero__content">
+            <p class="hero__label">Průmyslový areál</p>
+            <h1 class="hero__title">Frýdlant<br>nad Ostravicí</h1>
+            <p class="hero__subtitle">Halové, kancelářské a komerční prostory k&nbsp;pronájmu.<br>Od <strong>100 Kč/m²</strong> měsíčně bez DPH.</p>
+            <div class="hero__actions">
+                <a href="#mapa" class="btn btn--primary">Zobrazit nabídku</a>
+                <a href="#kontakt" class="btn btn--outline">Kontaktovat nás</a>
+            </div>
+            <div class="hero__stats">
+                <div class="stat">
+                    <span class="stat__number" data-count="available">—</span>
+                    <span class="stat__label">volných prostor</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number" data-count="totalArea">—</span>
+                    <span class="stat__label">m² k pronájmu</span>
+                </div>
+                <div class="stat">
+                    <span class="stat__number">100 Kč</span>
+                    <span class="stat__label">za m²/měsíc bez DPH</span>
+                </div>
+            </div>
+        </div>
+        <a href="#mapa" class="hero__scroll" aria-label="Scrollovat dolů">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12l7 7 7-7"/></svg>
+        </a>
+    </header>
+
+    <!-- INTERACTIVE MAP -->
+    <section class="map-section" id="mapa">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-header__tag">01</span>
+                <h2 class="section-header__title">Mapa areálu</h2>
+                <p class="section-header__desc">Klikněte na budovu pro zobrazení detailu a poptávku pronájmu.</p>
+            </div>
+            <div class="map-legend">
+                <div class="map-legend__item">
+                    <span class="map-legend__swatch map-legend__swatch--available"></span>
+                    <span>K pronájmu</span>
+                </div>
+                <div class="map-legend__item">
+                    <span class="map-legend__swatch map-legend__swatch--unavailable"></span>
+                    <span>Pronajato</span>
+                </div>
+                <div class="map-legend__item">
+                    <span class="map-legend__swatch map-legend__swatch--parking"></span>
+                    <span>Parkoviště</span>
+                </div>
+            </div>
+            <div class="map-wrapper">
+                <div class="map-wrapper__blueprint-label">SITUAČNÍ PLÁN AREÁLU</div>
+                <svg id="areal-map" viewBox="0 0 1000 750" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Grid pattern -->
+                    <defs>
+                        <pattern id="grid" width="50" height="50" patternUnits="userSpaceOnUse">
+                            <path d="M 50 0 L 0 0 0 50" fill="none" stroke="rgba(255,255,255,0.03)" stroke-width="0.5"/>
+                        </pattern>
+                        <pattern id="grid-fine" width="10" height="10" patternUnits="userSpaceOnUse">
+                            <path d="M 10 0 L 0 0 0 10" fill="none" stroke="rgba(255,255,255,0.015)" stroke-width="0.3"/>
+                        </pattern>
+                        <filter id="glow">
+                            <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+                            <feMerge>
+                                <feMergeNode in="coloredBlur"/>
+                                <feMergeNode in="SourceGraphic"/>
+                            </feMerge>
+                        </filter>
+                    </defs>
+
+                    <!-- Background -->
+                    <rect width="1000" height="750" fill="#0e1117"/>
+                    <rect width="1000" height="750" fill="url(#grid-fine)"/>
+                    <rect width="1000" height="750" fill="url(#grid)"/>
+
+                    <!-- Complex boundary -->
+                    <polygon class="map-boundary"
+                        points="60,30 680,30 720,45 920,45 960,80 960,420 940,520 920,620 880,700 60,700"
+                        fill="none" stroke="rgba(255,255,255,0.12)" stroke-width="1.5" stroke-dasharray="8,4"/>
+
+                    <!-- Road label -->
+                    <text x="950" y="690" class="map-label map-label--road" transform="rotate(-60, 950, 690)">ul. HLAVNÍ</text>
+
+                    <!-- Entry arrow -->
+                    <path d="M 920,640 L 880,580" stroke="#f59e0b" stroke-width="2" fill="none" marker-end="url(#arrow)"/>
+                    <defs>
+                        <marker id="arrow" markerWidth="10" markerHeight="7" refX="10" refY="3.5" orient="auto">
+                            <polygon points="0 0, 10 3.5, 0 7" fill="#f59e0b"/>
+                        </marker>
+                    </defs>
+                    <text x="925" y="660" class="map-label map-label--entry">VJEZD</text>
+
+                    <!-- Parking areas -->
+                    <rect class="map-parking" x="770" y="300" width="80" height="100" rx="3"/>
+                    <text x="810" y="355" class="map-label map-label--parking">P</text>
+
+                    <rect class="map-parking" x="700" y="470" width="70" height="80" rx="3"/>
+                    <text x="735" y="515" class="map-label map-label--parking">P</text>
+
+                    <rect class="map-parking" x="240" y="570" width="60" height="60" rx="3"/>
+                    <text x="270" y="605" class="map-label map-label--parking">P</text>
+
+                    <!-- === BUILDINGS === -->
+
+                    <!-- Zone 1: Right / Entrance -->
+                    <g class="building" data-hall-id="1">
+                        <rect x="880" y="450" width="55" height="75" rx="2"/>
+                        <text x="907" y="493"><tspan class="building__id">1</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="2">
+                        <rect x="880" y="100" width="50" height="50" rx="2"/>
+                        <text x="905" y="130"><tspan class="building__id">2</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="3">
+                        <rect x="860" y="330" width="50" height="70" rx="2"/>
+                        <text x="885" y="370"><tspan class="building__id">3</tspan></text>
+                    </g>
+
+                    <!-- Zone 2: Upper Right -->
+                    <g class="building" data-hall-id="4">
+                        <rect x="760" y="100" width="90" height="80" rx="2"/>
+                        <text x="805" y="145"><tspan class="building__id">4</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="7">
+                        <rect x="740" y="270" width="40" height="45" rx="2"/>
+                        <text x="760" y="298"><tspan class="building__id">7</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="5">
+                        <rect x="790" y="430" width="70" height="55" rx="2"/>
+                        <text x="825" y="463"><tspan class="building__id">5</tspan></text>
+                    </g>
+
+                    <!-- Zone 3: Upper Center -->
+                    <g class="building" data-hall-id="8">
+                        <rect x="530" y="80" width="65" height="55" rx="2"/>
+                        <text x="562" y="113"><tspan class="building__id">8</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="6">
+                        <rect x="660" y="140" width="50" height="50" rx="2"/>
+                        <text x="685" y="170"><tspan class="building__id">6</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="9">
+                        <rect x="570" y="155" width="80" height="70" rx="2"/>
+                        <text x="610" y="196"><tspan class="building__id">9</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="17">
+                        <rect x="445" y="140" width="65" height="65" rx="2"/>
+                        <text x="477" y="178"><tspan class="building__id">17</tspan></text>
+                    </g>
+
+                    <!-- Zone 4: Center -->
+                    <g class="building" data-hall-id="21">
+                        <rect x="335" y="160" width="100" height="100" rx="2"/>
+                        <text x="385" y="216"><tspan class="building__id">21</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="10">
+                        <rect x="570" y="250" width="105" height="90" rx="2"/>
+                        <text x="622" y="301"><tspan class="building__id">10</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="20">
+                        <rect x="335" y="275" width="100" height="90" rx="2"/>
+                        <text x="385" y="326"><tspan class="building__id">20</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="12">
+                        <rect x="680" y="340" width="45" height="45" rx="2"/>
+                        <text x="702" y="368"><tspan class="building__id">12</tspan></text>
+                    </g>
+
+                    <!-- Zone 5: Center-Lower -->
+                    <g class="building" data-hall-id="19">
+                        <rect x="350" y="385" width="95" height="85" rx="2"/>
+                        <text x="397" y="434"><tspan class="building__id">19</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="11">
+                        <rect x="550" y="365" width="100" height="80" rx="2"/>
+                        <text x="600" y="411"><tspan class="building__id">11</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="13">
+                        <rect x="655" y="390" width="50" height="45" rx="2"/>
+                        <text x="680" y="418"><tspan class="building__id">13</tspan></text>
+                    </g>
+
+                    <!-- Zone 6: Lower -->
+                    <g class="building" data-hall-id="16">
+                        <rect x="445" y="495" width="95" height="80" rx="2"/>
+                        <text x="492" y="541"><tspan class="building__id">16</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="18">
+                        <rect x="280" y="500" width="115" height="95" rx="2"/>
+                        <text x="337" y="554"><tspan class="building__id">18</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="14">
+                        <rect x="555" y="490" width="130" height="105" rx="2"/>
+                        <text x="620" y="549"><tspan class="building__id">14</tspan></text>
+                    </g>
+                    <g class="building" data-hall-id="15">
+                        <rect x="720" y="530" width="110" height="85" rx="2"/>
+                        <text x="775" y="579"><tspan class="building__id">15</tspan></text>
+                    </g>
+
+                    <!-- SPA for CARS label -->
+                    <text x="930" y="240" class="map-label map-label--poi">SPA for CARS</text>
+                </svg>
+
+                <!-- Tooltip -->
+                <div class="map-tooltip" id="map-tooltip">
+                    <strong id="tooltip-name"></strong>
+                    <span id="tooltip-area"></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- HALL LIST -->
+    <section class="halls-section" id="prostory">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-header__tag">02</span>
+                <h2 class="section-header__title">Nabídka prostor</h2>
+                <p class="section-header__desc">Přehled všech dostupných prostor k&nbsp;pronájmu.</p>
+            </div>
+            <div class="halls-filters">
+                <button class="filter-btn active" data-filter="all">Vše</button>
+                <button class="filter-btn" data-filter="hala">Haly</button>
+                <button class="filter-btn" data-filter="kanceláře">Kanceláře</button>
+                <button class="filter-btn" data-filter="other">Ostatní</button>
+            </div>
+            <div class="halls-grid" id="halls-grid">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- CONTACT FORM -->
+    <section class="contact-section" id="kontakt">
+        <div class="container">
+            <div class="contact-grid">
+                <div class="contact-info">
+                    <div class="section-header section-header--left">
+                        <span class="section-header__tag">03</span>
+                        <h2 class="section-header__title">Kontakt</h2>
+                    </div>
+                    <p class="contact-info__text">Máte zájem o&nbsp;pronájem? Napište nám nebo zavolejte. Rádi vám prostory ukážeme osobně.</p>
+                    <div class="contact-details">
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                            <div>
+                                <span class="contact-detail__label">Telefon</span>
+                                <a href="tel:+420777123456" class="contact-detail__value">+420 777 123 456</a>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-8.97 5.7a1.94 1.94 0 01-2.06 0L2 7"/></svg>
+                            <div>
+                                <span class="contact-detail__label">E-mail</span>
+                                <a href="mailto:pronajem@areal-frydlant.cz" class="contact-detail__value">pronajem@areal-frydlant.cz</a>
+                            </div>
+                        </div>
+                        <div class="contact-detail">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                            <div>
+                                <span class="contact-detail__label">Adresa</span>
+                                <span class="contact-detail__value">ul. Hlavní, Frýdlant nad Ostravicí</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="contact-map">
+                        <iframe src="https://frame.mapy.cz/s/nesozazaze" width="100%" height="250" frameborder="0" loading="lazy" style="border-radius:8px;border:1px solid rgba(255,255,255,0.06)"></iframe>
+                    </div>
+                </div>
+                <div class="contact-form-wrapper">
+                    <form class="contact-form" id="contact-form" action="#" method="POST">
+                        <h3 class="contact-form__title">Poptávkový formulář</h3>
+                        <div class="form-group">
+                            <label for="cf-name">Jméno a příjmení *</label>
+                            <input type="text" id="cf-name" name="name" required autocomplete="name">
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="cf-email">E-mail *</label>
+                                <input type="email" id="cf-email" name="email" required autocomplete="email">
+                            </div>
+                            <div class="form-group">
+                                <label for="cf-phone">Telefon</label>
+                                <input type="tel" id="cf-phone" name="phone" autocomplete="tel">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-hall">Prostor (volitelné)</label>
+                            <select id="cf-hall" name="hall">
+                                <option value="">— Vyberte prostor —</option>
+                                <!-- Generated by JS -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="cf-message">Zpráva *</label>
+                            <textarea id="cf-message" name="message" rows="4" required placeholder="Popište váš požadavek, požadovanou plochu, termín nastěhování..."></textarea>
+                        </div>
+                        <button type="submit" class="btn btn--primary btn--full">Odeslat poptávku</button>
+                        <p class="contact-form__note">Odpovíme do 24 hodin v pracovních dnech.</p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer__inner">
+                <div class="footer__brand">
+                    <span class="footer__logo">PA</span>
+                    <span>Průmyslový areál Frýdlant n. O.</span>
+                </div>
+                <p class="footer__copy">&copy; 2026 AREÁL FRÝDLANT s.r.o. Všechna práva vyhrazena.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- MODAL -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal" id="modal" role="dialog" aria-modal="true">
+            <button class="modal__close" id="modal-close" aria-label="Zavřít">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+            <div class="modal__header">
+                <span class="modal__tag" id="modal-type"></span>
+                <h2 class="modal__title" id="modal-title"></h2>
+            </div>
+            <div class="modal__body">
+                <div class="modal__stats">
+                    <div class="modal__stat">
+                        <span class="modal__stat-value" id="modal-area"></span>
+                        <span class="modal__stat-label">Plocha</span>
+                    </div>
+                    <div class="modal__stat">
+                        <span class="modal__stat-value" id="modal-price"></span>
+                        <span class="modal__stat-label">Měsíčně bez DPH</span>
+                    </div>
+                    <div class="modal__stat">
+                        <span class="modal__stat-value" id="modal-price-vat"></span>
+                        <span class="modal__stat-label">Měsíčně s DPH</span>
+                    </div>
+                </div>
+                <div class="modal__photos" id="modal-photos">
+                    <div class="modal__photos-placeholder">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+                        <span>Fotografie budou doplněny</span>
+                    </div>
+                </div>
+                <div class="modal__description" id="modal-description"></div>
+            </div>
+            <div class="modal__footer">
+                <form class="modal-form" id="modal-form" action="#" method="POST">
+                    <h3 class="modal-form__title">Mám zájem o tento prostor</h3>
+                    <input type="hidden" id="mf-hall" name="hall">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="mf-name">Jméno *</label>
+                            <input type="text" id="mf-name" name="name" required autocomplete="name">
+                        </div>
+                        <div class="form-group">
+                            <label for="mf-email">E-mail *</label>
+                            <input type="email" id="mf-email" name="email" required autocomplete="email">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="mf-phone">Telefon</label>
+                        <input type="tel" id="mf-phone" name="phone" autocomplete="tel">
+                    </div>
+                    <div class="form-group">
+                        <label for="mf-message">Zpráva</label>
+                        <textarea id="mf-message" name="message" rows="3" placeholder="Upřesněte váš požadavek..."></textarea>
+                    </div>
+                    <div class="modal-form__actions">
+                        <button type="submit" class="btn btn--primary">Odeslat poptávku</button>
+                        <a href="tel:+420777123456" class="btn btn--outline">
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72 12.84 12.84 0 00.7 2.81 2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.27-1.27a2 2 0 012.11-.45 12.84 12.84 0 002.81.7A2 2 0 0122 16.92z"/></svg>
+                            Zavolat
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
