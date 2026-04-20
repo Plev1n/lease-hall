@@ -464,10 +464,9 @@ async function submitForm(form, action) {
             throw new Error(result.error || 'Chyba při odesílání.');
         }
 
-        // Push conversion event to dataLayer for GTM
         if (window.dataLayer) {
             window.dataLayer.push({
-                event: 'form_submission',
+                event: 'form_submit_success',
                 form_action: action,
                 hall: data.hall || 'general',
             });
