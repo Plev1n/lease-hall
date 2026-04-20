@@ -150,43 +150,26 @@
                     <span class="map-legend__swatch map-legend__swatch--unavailable"></span>
                     <span>Pronajato</span>
                 </div>
+                <div class="map-legend__item">
+                    <span class="map-legend__swatch map-legend__swatch--parking"></span>
+                    <span>Parkoviště</span>
+                </div>
             </div>
             <div class="map-wrapper">
                 <div class="map-wrapper__blueprint-label">SITUAČNÍ PLÁN AREÁLU</div>
-                <div class="map-wrapper__compass" aria-hidden="true">
-                    <svg width="44" height="44" viewBox="0 0 44 44" fill="none">
-                        <circle cx="22" cy="22" r="20" stroke="currentColor" stroke-width="1" opacity="0.4"/>
-                        <path d="M22 6 L26 22 L22 20 L18 22 Z" fill="currentColor"/>
-                        <path d="M22 38 L26 22 L22 24 L18 22 Z" fill="currentColor" opacity="0.35"/>
-                        <text x="22" y="12" text-anchor="middle" font-family="monospace" font-size="5" font-weight="700" fill="currentColor">N</text>
-                    </svg>
-                </div>
-                <svg id="areal-map" viewBox="680 380 2280 1840" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+                <svg id="areal-map" viewBox="0 0 3508 2480" xmlns="http://www.w3.org/2000/svg">
                     <defs>
                         <filter id="glow">
-                            <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                            <feGaussianBlur stdDeviation="6" result="coloredBlur"/>
                             <feMerge>
                                 <feMergeNode in="coloredBlur"/>
                                 <feMergeNode in="SourceGraphic"/>
                             </feMerge>
                         </filter>
-                        <pattern id="grid" width="80" height="80" patternUnits="userSpaceOnUse">
-                            <path d="M 80 0 L 0 0 0 80" fill="none" stroke="rgba(245,158,11,0.06)" stroke-width="1"/>
-                        </pattern>
-                        <pattern id="grid-major" width="400" height="400" patternUnits="userSpaceOnUse">
-                            <path d="M 400 0 L 0 0 0 400" fill="none" stroke="rgba(245,158,11,0.1)" stroke-width="1.5"/>
-                        </pattern>
                     </defs>
 
-                    <!-- Canvas -->
-                    <rect x="680" y="380" width="2280" height="1840" fill="#0b0b0c"/>
-                    <rect x="680" y="380" width="2280" height="1840" fill="url(#grid)"/>
-                    <rect x="680" y="380" width="2280" height="1840" fill="url(#grid-major)"/>
-
-                    <!-- Street label -->
-                    <g class="street-label" aria-hidden="true">
-                        <text x="2780" y="1700" transform="rotate(-52 2780 1700)">ul. HLAVNÍ →</text>
-                    </g>
+                    <!-- Original schema as background -->
+                    <image href="assets/map-schema.png" x="0" y="0" width="3508" height="2480"/>
 
                     <!-- === INTERACTIVE BUILDING OVERLAYS === -->
                     <!-- Positioned over the original schema -->
