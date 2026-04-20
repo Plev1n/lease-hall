@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Map Overlay Editor — Satellite Backdrop</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a1a; color: #fff; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 13px; overflow: hidden; }
+
+.toolbar {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    background: rgba(0,0,0,0.95); padding: 8px 16px;
+    display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #333;
+    flex-wrap: wrap;
+}
+.toolbar h1 { font-size: 14px; font-weight: 600; }
+.toolbar button {
+    padding: 5px 12px; border-radius: 6px; cursor: pointer;
+    font-family: inherit; font-size: 12px; border: 1px solid #444;
+    background: #222; color: #fff;
+}
+.toolbar button:hover { background: #333; }
+.toolbar button.primary { background: #22c55e; color: #000; border-color: #22c55e; font-weight: 600; }
+.toolbar button.primary:hover { background: #16a34a; }
+.toolbar button.active-mode { background: #f59e0b; color: #000; border-color: #f59e0b; }
+.toolbar .sep { width: 1px; height: 20px; background: #333; }
+#status { color: #888; margin-left: auto; font-size: 11px; }
+
+.sidebar {
+    position: fixed; right: 0; top: 42px; bottom: 0; width: 260px; z-index: 90;
+    background: rgba(0,0,0,0.9); border-left: 1px solid #333;
+    overflow-y: auto; padding: 12px;
+}
+.sidebar h3 { font-size: 11px; color: #888; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em; }
+.bld-item {
+    padding: 5px 8px; margin-bottom: 3px; border-radius: 4px; cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    border: 1px solid transparent; font-size: 11px;
+}
+.bld-item:hover { background: #222; }
+.bld-item.active { border-color: #f59e0b; background: #1a1700; }
+.bld-item .id { font-weight: 700; color: #22c55e; width: 22px; }
+.bld-item.unavail .id { color: #ef4444; }
+.bld-item .name { flex: 1; color: #ccc; }
+.bld-item .type-tag { font-size: 9px; padding: 1px 5px; border-radius: 3px; background: #333; color: #888; margin-left: 4px; }
+.bld-item .type-tag.poly { background: #1a2700; color: #22c55e; }
+
+.canvas-wrap {
+    position: absolute; top: 42px; left: 0; right: 260px; bottom: 0;
+    overflow: auto; cursor: grab;
+}
+.canvas { position: relative; transform-origin: 0 0; }
+.canvas img { display: block; user-select: none; -webkit-user-drag: none; }
+.canvas svg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+.canvas svg .building-poly { pointer-events: all; cursor: move; }
+.canvas svg .building-poly:hover { filter: brightness(1.3); }
+.canvas svg .vertex { pointer-events: all; cursor: move; }
+.canvas svg .vertex:hover { r: 8; }
+.canvas svg .drawing-line { pointer-events: none; }
+
+.overlay {
+    position: absolute; border: 2px solid rgba(34, 197, 94, 0.7);
+    background: rgba(34, 197, 94, 0.15); cursor: move;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; color: rgba(255,255,255,0.8);
+    user-select: none;
+}
+.overlay:hover { border-color: #22c55e; background: rgba(34, 197, 94, 0.25); }
+.overlay.active { border-color: #f59e0b; background: rgba(245, 158, 11, 0.2); z-index: 10; }
+.overlay.unavail { border-color: rgba(239, 68, 68, 0.5); background: rgba(239, 68, 68, 0.1); }
+.overlay.hidden { display: none; }
+
+.resize-handle {
+    position: absolute; width: 10px; height: 10px; background: #f59e0b; border-radius: 2px;
+}
+.resize-handle.se { right: -5px; bottom: -5px; cursor: se-resize; }
+.resize-handle.ne { right: -5px; top: -5px; cursor: ne-resize; }
+.resize-handle.sw { left: -5px; bottom: -5px; cursor: sw-resize; }
+.resize-handle.nw { left: -5px; top: -5px; cursor: nw-resize; }
+
+.zoom-controls {
+    position: fixed; bottom: 16px; left: 16px; z-index: 100;
+    display: flex; gap: 4px; align-items: center;
+}
+.zoom-controls button { width: 32px; height: 32px; font-size: 16px; display: flex; align-items: center; justify-content: center; padding: 0; }
+
+.help-panel {
+    position: fixed; bottom: 16px; left: 50%; transform: translateX(-50%); z-index: 100;
+    background: rgba(0,0,0,0.9); border: 1px solid #333; border-radius: 8px;
+    padding: 8px 16px; font-size: 11px; color: #888; display: flex; gap: 16px;
+}
+.help-panel kbd { background: #333; padding: 1px 6px; border-radius: 3px; color: #ccc; }
+
+#output-modal {
+    display: none; position: fixed; inset: 0; z-index: 200;
+    background: rgba(0,0,0,0.8); align-items: center; justify-content: center;
+}
+#output-modal.open { display: flex; }
+#output-modal .content {
+    background: #1a1a1a; border: 1px solid #333; border-radius: 12px;
+    padding: 24px; max-width: 800px; width: 90%; max-height: 80vh; overflow-y: auto;
+}
+#output-modal textarea {
+    width: 100%; height: 400px; background: #111; color: #22c55e; border: 1px solid #333;
+    border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; resize: vertical;
+}
+#output-modal h2 { margin-bottom: 8px; font-size: 16px; }
+#output-modal p { color: #888; margin-bottom: 12px; font-size: 13px; }
+</style>
+</head>
+<body>
+
+<div class="toolbar">
+    <h1>Map Editor — Satellite</h1>
+    <div class="sep"></div>
+    <button id="btn-draw" onclick="toggleDrawMode()">Draw Polygon (P)</button>
+    <button onclick="deleteLastVertex()">Undo Point (Z)</button>
+    <button onclick="clearPolygon()">Clear Shape (C)</button>
+    <div class="sep"></div>
+    <button onclick="fitToScreen()">Fit</button>
+    <button onclick="resetZoom()">1:1</button>
+    <button class="primary" onclick="exportCoords()">Export SVG</button>
+    <span id="status">Select a building, then press P to draw polygon</span>
+</div>
+
+<div class="sidebar" id="sidebar">
+    <h3>Buildings</h3>
+    <div id="bld-list"></div>
+</div>
+
+<div class="canvas-wrap" id="canvas-wrap">
+    <div class="canvas" id="canvas">
+        <img src="assets/map-satellite.jpg" id="map-img" draggable="false">
+        <svg id="svg-layer" viewBox="0 0 1193 1600" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+</div>
+
+<div class="zoom-controls">
+    <button onclick="zoomOut()">−</button>
+    <span id="zoom-level" style="color:#666;padding:4px;font-size:11px;">100%</span>
+    <button onclick="zoomIn()">+</button>
+</div>
+
+<div class="help-panel">
+    <span><kbd>P</kbd> draw polygon</span>
+    <span><kbd>Z</kbd> undo point</span>
+    <span><kbd>C</kbd> clear shape</span>
+    <span><kbd>Enter</kbd> finish</span>
+    <span><kbd>Arrows</kbd> move (Shift=10px)</span>
+    <span><kbd>Del</kbd> delete vertex</span>
+</div>
+
+<div id="output-modal">
+    <div class="content">
+        <h2>SVG Building Overlays</h2>
+        <p>Copy and replace the overlays section in index.html.</p>
+        <textarea id="output-code" readonly></textarea>
+        <br><br>
+        <button onclick="document.getElementById('output-modal').classList.remove('open')" style="padding:6px 14px;border-radius:6px;background:#333;color:#fff;border:1px solid #555;cursor:pointer;">Close</button>
+        <button onclick="navigator.clipboard.writeText(document.getElementById('output-code').value)" style="padding:6px 14px;border-radius:6px;background:#22c55e;color:#000;border:none;cursor:pointer;margin-left:8px;font-weight:600;">Copy</button>
+    </div>
+</div>
+
+<script>
+const IMG_W = 1193, IMG_H = 1600;
+
+// Building data: supports both rect and polygon modes.
+// Editor backdrop is the satellite screenshot (1193×1600).
+// Start from scratch — press P, click vertices along building roofline, Enter to finish.
+const buildings = [
+    { id: 1,  name: "Admin. budova",    unavail: false, x: 100, y: 100, w: 80, h: 60, polygon: [] },
+    { id: 2,  name: "Trafo stanice",    unavail: true,  x: 100, y: 170, w: 80, h: 60, polygon: [] },
+    { id: 3,  name: "Garáže",           unavail: false, x: 100, y: 240, w: 80, h: 60, polygon: [] },
+    { id: 4,  name: "Hala",             unavail: false, x: 100, y: 310, w: 80, h: 60, polygon: [] },
+    { id: 5,  name: "Jídelna",          unavail: false, x: 100, y: 380, w: 80, h: 60, polygon: [] },
+    { id: 6,  name: "Stolárna",         unavail: false, x: 100, y: 450, w: 80, h: 60, polygon: [] },
+    { id: 7,  name: "Admin. budova",    unavail: false, x: 100, y: 520, w: 80, h: 60, polygon: [] },
+    { id: 8,  name: "3 patrová budova", unavail: false, x: 100, y: 590, w: 80, h: 60, polygon: [] },
+    { id: 9,  name: "2 patrová hala",   unavail: false, x: 100, y: 660, w: 80, h: 60, polygon: [] },
+    { id: 10, name: "Hala 532m²",       unavail: false, x: 100, y: 730, w: 80, h: 60, polygon: [] },
+    { id: 11, name: "Hala 660m²",       unavail: true,  x: 100, y: 800, w: 80, h: 60, polygon: [] },
+    { id: 12, name: "Admin. budova",    unavail: false, x: 100, y: 870, w: 80, h: 60, polygon: [] },
+    { id: 13, name: "Hala + voda",      unavail: true,  x: 100, y: 940, w: 80, h: 60, polygon: [] },
+    { id: 14, name: "Hala 1340m²",      unavail: false, x: 100, y: 1010, w: 80, h: 60, polygon: [] },
+    { id: 15, name: "Zastřešená pl.",   unavail: false, x: 100, y: 1080, w: 80, h: 60, polygon: [] },
+    { id: 16, name: "Hala 1500m²",      unavail: false, x: 100, y: 1150, w: 80, h: 60, polygon: [] },
+    { id: 17, name: "Hala",             unavail: false, x: 100, y: 1220, w: 80, h: 60, polygon: [] },
+    { id: 18, name: "Hala 1875m²",      unavail: false, x: 100, y: 1290, w: 80, h: 60, polygon: [] },
+    { id: 19, name: "Hala 625m²",       unavail: false, x: 100, y: 1360, w: 80, h: 60, polygon: [] },
+    { id: 20, name: "Hala 800m²",       unavail: false, x: 190, y: 100, w: 80, h: 60, polygon: [] },
+    { id: 21, name: "Hala 1400m²",      unavail: false, x: 190, y: 170, w: 80, h: 60, polygon: [] },
+    { id: 22, name: "Hala (na vyž.)",   unavail: false, x: 190, y: 240, w: 80, h: 60, polygon: [] },
+    { id: 23, name: "Hala (na vyž.)",   unavail: false, x: 190, y: 310, w: 80, h: 60, polygon: [] },
+    { id: 26, name: "Hala (na vyž.)",   unavail: false, x: 190, y: 380, w: 80, h: 60, polygon: [] },
+    { id: 35, name: "Hala (na vyž.)",   unavail: false, x: 190, y: 450, w: 80, h: 60, polygon: [] },
+    { id: 36, name: "Hala (na vyž.)",   unavail: false, x: 190, y: 520, w: 80, h: 60, polygon: [] },
+];
+
+let zoom = 0.5;
+let activeId = null;
+let drawMode = false;
+let drawingPoints = []; // temp points while drawing
+let selectedVertexIdx = -1;
+
+const canvas = document.getElementById('canvas');
+const canvasWrap = document.getElementById('canvas-wrap');
+const mapImg = document.getElementById('map-img');
+const svgLayer = document.getElementById('svg-layer');
+
+mapImg.onload = () => { init(); };
+if (mapImg.complete) { init(); }
+
+function init() {
+    updateZoom();
+    renderAll();
+    createSidebar();
+    fitToScreen();
+}
+
+function updateZoom() {
+    canvas.style.transform = `scale(${zoom})`;
+    canvas.style.width = IMG_W + 'px';
+    canvas.style.height = IMG_H + 'px';
+    document.getElementById('zoom-level').textContent = Math.round(zoom * 100) + '%';
+}
+function zoomIn() { zoom = Math.min(3, zoom + 0.1); updateZoom(); }
+function zoomOut() { zoom = Math.max(0.1, zoom - 0.1); updateZoom(); }
+function resetZoom() { zoom = 1; updateZoom(); }
+function fitToScreen() {
+    const r = canvasWrap.getBoundingClientRect();
+    zoom = Math.min(r.width / IMG_W, r.height / IMG_H) * 0.95;
+    updateZoom();
+}
+
+// ── Rendering ──────────────────────────────
+function renderAll() {
+    // Clear SVG
+    svgLayer.innerHTML = '';
+    // Clear rect overlays
+    document.querySelectorAll('.overlay').forEach(el => el.remove());
+
+    buildings.forEach(b => {
+        if (b.polygon && b.polygon.length >= 3) {
+            renderPolygon(b);
+        } else {
+            renderRect(b);
+        }
+    });
+
+    // Draw temp points if in draw mode
+    if (drawMode && drawingPoints.length > 0) {
+        renderDrawingPreview();
+    }
+}
+
+function renderRect(b) {
+    const el = document.createElement('div');
+    el.className = 'overlay' + (b.unavail ? ' unavail' : '') + (b.id === activeId ? ' active' : '');
+    if (b.polygon && b.polygon.length >= 3) el.className += ' hidden';
+    el.dataset.id = b.id;
+    el.style.left = b.x + 'px';
+    el.style.top = b.y + 'px';
+    el.style.width = b.w + 'px';
+    el.style.height = b.h + 'px';
+    el.textContent = b.id;
+
+    ['nw','ne','sw','se'].forEach(pos => {
+        const h = document.createElement('div');
+        h.className = `resize-handle ${pos}`;
+        h.dataset.handle = pos;
+        el.appendChild(h);
+    });
+
+    el.addEventListener('mousedown', (e) => {
+        if (drawMode) return;
+        if (e.target.classList.contains('resize-handle')) startResize(e, b, e.target.dataset.handle);
+        else startDrag(e, b);
+        setActive(b.id);
+        e.stopPropagation();
+    });
+
+    canvas.appendChild(el);
+}
+
+function renderPolygon(b) {
+    const pts = b.polygon.map(p => p.join(',')).join(' ');
+    const fill = b.unavail ? 'rgba(239,68,68,0.15)' : 'rgba(34,197,94,0.18)';
+    const stroke = b.unavail ? 'rgba(239,68,68,0.6)' : 'rgba(34,197,94,0.6)';
+    const activeStroke = b.id === activeId ? '#f59e0b' : stroke;
+    const activeFill = b.id === activeId ? 'rgba(245,158,11,0.2)' : fill;
+
+    const poly = document.createElementNS('http://www.w3.org/2000/svg', 'polygon');
+    poly.setAttribute('points', pts);
+    poly.setAttribute('fill', activeFill);
+    poly.setAttribute('stroke', activeStroke);
+    poly.setAttribute('stroke-width', b.id === activeId ? '6' : '4');
+    poly.classList.add('building-poly');
+    poly.dataset.id = b.id;
+
+    poly.addEventListener('mousedown', (e) => {
+        if (drawMode) return;
+        setActive(b.id);
+        startPolyDrag(e, b);
+        e.stopPropagation();
+    });
+
+    svgLayer.appendChild(poly);
+
+    // Label
+    const cx = b.polygon.reduce((s, p) => s + p[0], 0) / b.polygon.length;
+    const cy = b.polygon.reduce((s, p) => s + p[1], 0) / b.polygon.length;
+    const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    text.setAttribute('x', cx);
+    text.setAttribute('y', cy);
+    text.setAttribute('text-anchor', 'middle');
+    text.setAttribute('dominant-baseline', 'central');
+    text.setAttribute('fill', 'rgba(255,255,255,0.8)');
+    text.setAttribute('font-size', '40');
+    text.setAttribute('font-weight', 'bold');
+    text.setAttribute('font-family', 'monospace');
+    text.setAttribute('pointer-events', 'none');
+    text.textContent = b.id;
+    svgLayer.appendChild(text);
+
+    // Vertex handles (only when active)
+    if (b.id === activeId && !drawMode) {
+        b.polygon.forEach((p, i) => {
+            const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+            circle.setAttribute('cx', p[0]);
+            circle.setAttribute('cy', p[1]);
+            circle.setAttribute('r', '6');
+            circle.setAttribute('fill', '#f59e0b');
+            circle.setAttribute('stroke', '#000');
+            circle.setAttribute('stroke-width', '1');
+            circle.classList.add('vertex');
+            circle.dataset.idx = i;
+            circle.addEventListener('mousedown', (e) => {
+                startVertexDrag(e, b, i);
+                e.stopPropagation();
+            });
+            svgLayer.appendChild(circle);
+        });
+    }
+}
+
+function renderDrawingPreview() {
+    if (drawingPoints.length === 0) return;
+
+    // Lines between points
+    for (let i = 0; i < drawingPoints.length - 1; i++) {
+        const line = document.createElementNS('http://www.w3.org/2000/svg', 'line');
+        line.setAttribute('x1', drawingPoints[i][0]);
+        line.setAttribute('y1', drawingPoints[i][1]);
+        line.setAttribute('x2', drawingPoints[i+1][0]);
+        line.setAttribute('y2', drawingPoints[i+1][1]);
+        line.setAttribute('stroke', '#f59e0b');
+        line.setAttribute('stroke-width', '4');
+        line.setAttribute('stroke-dasharray', '10,5');
+        line.classList.add('drawing-line');
+        svgLayer.appendChild(line);
+    }
+
+    // Points
+    drawingPoints.forEach((p, i) => {
+        const circle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+        circle.setAttribute('cx', p[0]);
+        circle.setAttribute('cy', p[1]);
+        circle.setAttribute('r', '7');
+        circle.setAttribute('fill', i === 0 ? '#22c55e' : '#f59e0b');
+        circle.setAttribute('stroke', '#000');
+        circle.setAttribute('stroke-width', '2');
+        circle.style.pointerEvents = 'none';
+        svgLayer.appendChild(circle);
+    });
+}
+
+// ── Interactions ────────────────────────────
+function setActive(id) {
+    activeId = id;
+    if (drawMode && drawingPoints.length > 0) finishDrawing();
+    drawMode = false;
+    document.getElementById('btn-draw').classList.remove('active-mode');
+    renderAll();
+    updateSidebar();
+    updateStatus();
+}
+
+function updateStatus() {
+    const b = buildings.find(b => b.id === activeId);
+    if (!b) { document.getElementById('status').textContent = 'Select a building'; return; }
+    const hasPoly = b.polygon && b.polygon.length >= 3;
+    document.getElementById('status').textContent = `#${b.id} ${b.name} — ${hasPoly ? 'polygon (' + b.polygon.length + ' pts)' : 'rect ' + b.w + 'x' + b.h}`;
+}
+
+function toggleDrawMode() {
+    if (!activeId) { alert('Select a building first'); return; }
+    if (drawMode) {
+        finishDrawing();
+    } else {
+        drawMode = true;
+        drawingPoints = [];
+        document.getElementById('btn-draw').classList.add('active-mode');
+        canvasWrap.style.cursor = 'crosshair';
+        document.getElementById('status').textContent = `Drawing polygon for #${activeId} — click to add points, Enter to finish`;
+    }
+}
+
+function finishDrawing() {
+    if (drawingPoints.length >= 3) {
+        const b = buildings.find(b => b.id === activeId);
+        if (b) b.polygon = [...drawingPoints];
+    }
+    drawingPoints = [];
+    drawMode = false;
+    document.getElementById('btn-draw').classList.remove('active-mode');
+    canvasWrap.style.cursor = 'grab';
+    renderAll();
+    updateSidebar();
+    updateStatus();
+}
+
+function deleteLastVertex() {
+    if (drawMode && drawingPoints.length > 0) {
+        drawingPoints.pop();
+        renderAll();
+    }
+}
+
+function clearPolygon() {
+    if (!activeId) return;
+    const b = buildings.find(b => b.id === activeId);
+    if (b) { b.polygon = []; drawingPoints = []; }
+    drawMode = false;
+    document.getElementById('btn-draw').classList.remove('active-mode');
+    canvasWrap.style.cursor = 'grab';
+    renderAll();
+    updateSidebar();
+    updateStatus();
+}
+
+// Click to add polygon point
+canvasWrap.addEventListener('click', (e) => {
+    if (!drawMode) return;
+    const imgRect = mapImg.getBoundingClientRect();
+    const x = Math.round((e.clientX - imgRect.left) / zoom);
+    const y = Math.round((e.clientY - imgRect.top) / zoom);
+    if (x < 0 || y < 0 || x > IMG_W || y > IMG_H) return;
+    drawingPoints.push([x, y]);
+    renderAll();
+});
+
+// Double-click to finish polygon
+canvasWrap.addEventListener('dblclick', (e) => {
+    if (drawMode && drawingPoints.length >= 3) {
+        finishDrawing();
+    }
+});
+
+// Drag entire polygon
+function startPolyDrag(e, b) {
+    const startX = e.clientX, startY = e.clientY;
+    const origPts = b.polygon.map(p => [...p]);
+
+    function onMove(e) {
+        const dx = Math.round((e.clientX - startX) / zoom);
+        const dy = Math.round((e.clientY - startY) / zoom);
+        b.polygon = origPts.map(p => [p[0] + dx, p[1] + dy]);
+        renderAll();
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+// Drag individual vertex
+function startVertexDrag(e, b, idx) {
+    const startX = e.clientX, startY = e.clientY;
+    const origPt = [...b.polygon[idx]];
+
+    function onMove(e) {
+        const dx = Math.round((e.clientX - startX) / zoom);
+        const dy = Math.round((e.clientY - startY) / zoom);
+        b.polygon[idx] = [origPt[0] + dx, origPt[1] + dy];
+        renderAll();
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+// Drag rect overlay
+function startDrag(e, b) {
+    const startX = e.clientX, startY = e.clientY;
+    const origX = b.x, origY = b.y;
+    function onMove(e) {
+        b.x = Math.round(origX + (e.clientX - startX) / zoom);
+        b.y = Math.round(origY + (e.clientY - startY) / zoom);
+        syncRectOverlay(b);
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+}
+
+function startResize(e, b, handle) {
+    const startX = e.clientX, startY = e.clientY;
+    const ox = b.x, oy = b.y, ow = b.w, oh = b.h;
+    function onMove(e) {
+        const dx = (e.clientX - startX) / zoom;
+        const dy = (e.clientY - startY) / zoom;
+        if (handle.includes('e')) b.w = Math.max(20, Math.round(ow + dx));
+        if (handle.includes('s')) b.h = Math.max(20, Math.round(oh + dy));
+        if (handle.includes('w')) { b.x = Math.round(ox + dx); b.w = Math.max(20, Math.round(ow - dx)); }
+        if (handle.includes('n')) { b.y = Math.round(oy + dy); b.h = Math.max(20, Math.round(oh - dy)); }
+        syncRectOverlay(b);
+    }
+    function onUp() {
+        document.removeEventListener('mousemove', onMove);
+        document.removeEventListener('mouseup', onUp);
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+    e.stopPropagation();
+}
+
+function syncRectOverlay(b) {
+    const el = document.querySelector(`.overlay[data-id="${b.id}"]`);
+    if (el) {
+        el.style.left = b.x + 'px'; el.style.top = b.y + 'px';
+        el.style.width = b.w + 'px'; el.style.height = b.h + 'px';
+    }
+}
+
+// ── Sidebar ────────────────────────────────
+function createSidebar() { updateSidebar(); }
+
+function updateSidebar() {
+    const list = document.getElementById('bld-list');
+    list.innerHTML = '';
+    buildings.forEach(b => {
+        const hasPoly = b.polygon && b.polygon.length >= 3;
+        const item = document.createElement('div');
+        item.className = 'bld-item' + (b.unavail ? ' unavail' : '') + (b.id === activeId ? ' active' : '');
+        item.dataset.id = b.id;
+        item.innerHTML = `
+            <span class="id">${b.id}</span>
+            <span class="name">${b.name}</span>
+            <span class="type-tag ${hasPoly ? 'poly' : ''}">${hasPoly ? 'poly' : 'rect'}</span>
+        `;
+        item.addEventListener('click', () => { setActive(b.id); scrollToBuilding(b); });
+        list.appendChild(item);
+    });
+}
+
+function scrollToBuilding(b) {
+    let cx, cy;
+    if (b.polygon && b.polygon.length >= 3) {
+        cx = b.polygon.reduce((s, p) => s + p[0], 0) / b.polygon.length;
+        cy = b.polygon.reduce((s, p) => s + p[1], 0) / b.polygon.length;
+    } else {
+        cx = b.x + b.w / 2; cy = b.y + b.h / 2;
+    }
+    const wr = canvasWrap.getBoundingClientRect();
+    canvasWrap.scrollLeft = cx * zoom - wr.width / 2;
+    canvasWrap.scrollTop = cy * zoom - wr.height / 2;
+}
+
+// ── Export ──────────────────────────────────
+function exportCoords() {
+    let code = '                    <!-- === INTERACTIVE BUILDING OVERLAYS === -->\n';
+    code += '                    <!-- Positioned over the original schema -->\n\n';
+    buildings.forEach(b => {
+        const hasPoly = b.polygon && b.polygon.length >= 3;
+        code += `                    <g class="building" data-hall-id="${b.id}">\n`;
+        if (hasPoly) {
+            const pts = b.polygon.map(p => p.join(',')).join(' ');
+            code += `                        <polygon points="${pts}"/>\n`;
+        } else {
+            code += `                        <rect x="${b.x}" y="${b.y}" width="${b.w}" height="${b.h}" rx="4"/>\n`;
+        }
+        code += `                    </g>\n`;
+    });
+    document.getElementById('output-code').value = code;
+    document.getElementById('output-modal').classList.add('open');
+}
+
+// ── Panning ────────────────────────────────
+let isPanning = false, panStart = {};
+canvasWrap.addEventListener('mousedown', (e) => {
+    if (drawMode) return;
+    if (e.target === canvasWrap || e.target === canvas || e.target === mapImg) {
+        isPanning = true;
+        panStart = { x: e.clientX + canvasWrap.scrollLeft, y: e.clientY + canvasWrap.scrollTop };
+        canvasWrap.style.cursor = 'grabbing';
+    }
+});
+document.addEventListener('mousemove', (e) => {
+    if (isPanning) {
+        canvasWrap.scrollLeft = panStart.x - e.clientX;
+        canvasWrap.scrollTop = panStart.y - e.clientY;
+    }
+});
+document.addEventListener('mouseup', () => { isPanning = false; if (!drawMode) canvasWrap.style.cursor = 'grab'; });
+
+canvasWrap.addEventListener('wheel', (e) => {
+    e.preventDefault();
+    zoom = Math.max(0.1, Math.min(3, zoom + (e.deltaY > 0 ? -0.05 : 0.05)));
+    updateZoom();
+}, { passive: false });
+
+// ── Keyboard ───────────────────────────────
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        if (drawMode) { drawingPoints = []; drawMode = false; document.getElementById('btn-draw').classList.remove('active-mode'); canvasWrap.style.cursor = 'grab'; renderAll(); }
+        document.getElementById('output-modal').classList.remove('open');
+    }
+    if (e.key === 'p' || e.key === 'P') { if (!e.ctrlKey && !e.metaKey) toggleDrawMode(); }
+    if (e.key === 'z' || e.key === 'Z') { if (!e.ctrlKey && !e.metaKey) deleteLastVertex(); }
+    if (e.key === 'c' && !e.ctrlKey && !e.metaKey) clearPolygon();
+    if (e.key === 'Enter' && drawMode) finishDrawing();
+
+    if (!activeId || drawMode) return;
+    const b = buildings.find(b => b.id === activeId);
+    if (!b) return;
+    const step = e.shiftKey ? 10 : 1;
+    const arrows = { ArrowLeft: [-step, 0], ArrowRight: [step, 0], ArrowUp: [0, -step], ArrowDown: [0, step] };
+    if (arrows[e.key]) {
+        const [dx, dy] = arrows[e.key];
+        if (b.polygon && b.polygon.length >= 3) {
+            b.polygon = b.polygon.map(p => [p[0] + dx, p[1] + dy]);
+        } else {
+            b.x += dx; b.y += dy;
+        }
+        renderAll();
+        e.preventDefault();
+    }
+});
+</script>
+</body>
+</html>
