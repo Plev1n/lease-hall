@@ -75,7 +75,7 @@ function galleryItems(hall) {
                 type: 'photo',
                 full: photoUrl(hall, i),
                 thumb: photoUrl(hall, i, true),
-                alt: `${hall.name} #${hall.id} — foto ${i}`,
+                alt: `${hall.name} č. ${hall.id} k pronájmu – Areál NORMA FnO, Frýdlant nad Ostravicí – foto ${i}`,
             });
         }
     }
@@ -85,7 +85,7 @@ function galleryItems(hall) {
             full: `assets/plans/thumbs/plan-${hall.id}.jpg`,
             thumb: `assets/plans/thumbs/plan-${hall.id}-thumb.jpg`,
             pdf: `assets/plans/${hall.plan}.pdf`,
-            alt: `${hall.name} #${hall.id} — půdorys`,
+            alt: `Půdorys – ${hall.name} č. ${hall.id}, Areál NORMA FnO, Frýdlant nad Ostravicí`,
         });
     }
     return items;
