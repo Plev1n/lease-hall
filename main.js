@@ -20,7 +20,7 @@ const HALLS = [
     { id: 11, name: "Hala",                    type: "hala",      area: 660,  available: false, description: "Hala 44 × 15 m, max. výška 5,8 m, min. 3,8 m — aktuálně pronajato.", plan: "hala-11" },
     { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
     { id: 13, name: "Hala a úpravna vody",     type: "hala",      area: 400,  available: false, description: "Hala s úpravnou vody — aktuálně pronajato." },
-    { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: false, description: "Velká halová plocha — aktuálně pronajato.", photos: 3 },
+    { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
     { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 4 },
     { id: 16, name: "Hala",                    type: "hala",      area: 1630, available: true,  description: "Dlouhá hala 100 × 16,3 m. Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 3, plan: "hala-16" },
     { id: 17, name: "Hala",                    type: "hala",      area: 225,  available: true,  description: "Hala 18,2 × 12,4 m, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 1, plan: "hala-17" },
