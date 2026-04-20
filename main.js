@@ -137,6 +137,26 @@ function initMap() {
             g.classList.add('unavailable');
         }
 
+        // Inject hall number label at polygon centroid
+        const shape = g.querySelector('polygon, rect');
+        if (shape && !g.querySelector('.building__label')) {
+            let cx, cy;
+            if (shape.tagName === 'polygon') {
+                const pts = shape.getAttribute('points').trim().split(/\s+/).map(p => p.split(',').map(Number));
+                cx = pts.reduce((s, p) => s + p[0], 0) / pts.length;
+                cy = pts.reduce((s, p) => s + p[1], 0) / pts.length;
+            } else {
+                cx = parseFloat(shape.getAttribute('x')) + parseFloat(shape.getAttribute('width')) / 2;
+                cy = parseFloat(shape.getAttribute('y')) + parseFloat(shape.getAttribute('height')) / 2;
+            }
+            const label = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+            label.setAttribute('class', 'building__label');
+            label.setAttribute('x', cx);
+            label.setAttribute('y', cy);
+            label.textContent = hall.id;
+            g.appendChild(label);
+        }
+
         // Hover tooltip
         g.addEventListener('mouseenter', (e) => {
             tooltipName.textContent = `${hall.name} #${hall.id}`;
