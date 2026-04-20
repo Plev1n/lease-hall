@@ -40,7 +40,7 @@ const PRICE_PER_M2 = 100;       // CZK bez DPH
 const PRICE_PER_M2_VAT = 121;   // CZK s DPH
 
 // ── Config ──────────────────────────────────
-const RECAPTCHA_SITE_KEY = 'RECAPTCHA_SITE_KEY_HERE'; // Replace with real key
+const RECAPTCHA_SITE_KEY = '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
 const API_ENDPOINT = '/api/submit';
 
 // ── Helpers ─────────────────────────────────
@@ -425,12 +425,18 @@ function setSubmitting(form, loading) {
 }
 
 async function getRecaptchaToken(action) {
-    if (typeof grecaptcha === 'undefined' || RECAPTCHA_SITE_KEY === 'RECAPTCHA_SITE_KEY_HERE') {
+    if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
         return '';
     }
     try {
-        await grecaptcha.ready(() => {});
-        return await grecaptcha.execute(RECAPTCHA_SITE_KEY, { action });
+        return await new Promise((resolve, reject) => {
+            grecaptcha.enterprise.ready(async () => {
+                try {
+                    const token = await grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action });
+                    resolve(token);
+                } catch (err) { reject(err); }
+            });
+        });
     } catch (err) {
         console.warn('reCAPTCHA error:', err);
         return '';
