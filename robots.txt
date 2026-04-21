@@ -1,7 +1,5 @@
 User-agent: *
 Allow: /
 Disallow: /api/
-Disallow: /editor.html
-Disallow: /editor-satellite.html
 
 Sitemap: https://arealfno.cz/sitemap.xml
