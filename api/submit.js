@@ -150,6 +150,7 @@ module.exports = async function handler(req, res) {
     if (!captcha.valid) {
         return res.status(403).json({
             error: 'Ověření zabezpečení selhalo. Zkuste to prosím znovu.',
+            debug: { reason: captcha.reason, score: captcha.score, tokenProps: captcha.tokenProps },
         });
     }
 
