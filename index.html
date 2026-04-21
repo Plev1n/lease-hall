@@ -93,10 +93,9 @@
     })(window,document,'script','dataLayer','GTM-TTWTSV8H');</script>
     <!-- End Google Tag Manager -->
 
-    <!-- reCAPTCHA Enterprise -->
-    <script src="https://www.google.com/recaptcha/enterprise.js?render=6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj" async defer></script>
+    <!-- reCAPTCHA Enterprise is lazy-loaded on first form interaction (see main.js) -->
 
-    <link rel="preload" as="image" href="/assets/video/hero-drone-poster.jpg" fetchpriority="high">
+    <link rel="preload" as="image" href="/assets/video/hero-drone-poster.webp" fetchpriority="high" type="image/webp">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=DM+Sans:ital,opsz,wght@0,9..40,300..700;1,9..40,300..700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
@@ -109,9 +108,9 @@
 
     <!-- HERO -->
     <header class="hero" id="hero">
-        <video class="hero__video" autoplay muted loop playsinline preload="metadata"
-               poster="assets/video/hero-drone-poster.jpg">
-            <source src="assets/video/hero-drone.mp4" type="video/mp4">
+        <video class="hero__video" id="hero-video" muted loop playsinline preload="none"
+               poster="assets/video/hero-drone-poster.webp">
+            <source data-src="assets/video/hero-drone.mp4" type="video/mp4">
         </video>
         <div class="hero__overlay"></div>
         <div class="hero__noise"></div>
@@ -179,8 +178,8 @@
                         </filter>
                     </defs>
 
-                    <!-- Original schema as background -->
-                    <image href="assets/map-schema.png" x="0" y="0" width="3508" height="2480"/>
+                    <!-- Original schema as background (WebP, 95% smaller than PNG) -->
+                    <image href="assets/map-schema.webp" x="0" y="0" width="3508" height="2480"/>
 
                     <!-- === INTERACTIVE BUILDING OVERLAYS === -->
                     <!-- Positioned over the original schema -->

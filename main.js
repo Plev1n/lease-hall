@@ -63,19 +63,22 @@ function priceLabel(hall, withVat = false) {
     return `${fmt(hall.area * rate)} Kč`;
 }
 
-function photoUrl(hall, i, thumb = false) {
-    return `assets/photos/${hall.id}/${i}${thumb ? '-thumb' : ''}.jpg`;
+function photoUrl(hall, i, thumb = false, ext = 'webp') {
+    return `assets/photos/${hall.id}/${i}${thumb ? '-thumb' : ''}.${ext}`;
 }
 
 // Returns ordered gallery items for a hall: photos first, then floor-plan (if any).
+// Each item carries both WebP (primary) and JPG (fallback) URLs.
 function galleryItems(hall) {
     const items = [];
     if (hall.photos) {
         for (let i = 1; i <= hall.photos; i++) {
             items.push({
                 type: 'photo',
-                full: photoUrl(hall, i),
-                thumb: photoUrl(hall, i, true),
+                full: photoUrl(hall, i, false, 'webp'),
+                fullJpg: photoUrl(hall, i, false, 'jpg'),
+                thumb: photoUrl(hall, i, true, 'webp'),
+                thumbJpg: photoUrl(hall, i, true, 'jpg'),
                 alt: `${hall.name} č. ${hall.id} k pronájmu – Areál NORMA FnO, Frýdlant nad Ostravicí – foto ${i}`,
             });
         }
@@ -84,7 +87,9 @@ function galleryItems(hall) {
         items.push({
             type: 'plan',
             full: `assets/plans/thumbs/plan-${hall.id}.jpg`,
+            fullJpg: `assets/plans/thumbs/plan-${hall.id}.jpg`,
             thumb: `assets/plans/thumbs/plan-${hall.id}-thumb.jpg`,
+            thumbJpg: `assets/plans/thumbs/plan-${hall.id}-thumb.jpg`,
             pdf: `assets/plans/${hall.plan}.pdf`,
             alt: `Půdorys – ${hall.name} č. ${hall.id}, Areál NORMA FnO, Frýdlant nad Ostravicí`,
         });
@@ -178,7 +183,12 @@ function renderHallCards(filter = 'all') {
     const available = HALLS.filter(h => h.available && matchesFilter(h, filter));
 
     grid.innerHTML = available.map(hall => {
-        const cover = hall.photos ? `<div class="hall-card__cover" style="background-image:url('${photoUrl(hall, 1, true)}')"></div>` : `<div class="hall-card__cover hall-card__cover--empty"></div>`;
+        const cover = hall.photos
+            ? `<div class="hall-card__cover"><picture>
+                    <source type="image/webp" srcset="${photoUrl(hall, 1, true, 'webp')}">
+                    <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} — náhled" loading="lazy" decoding="async" class="hall-card__cover-img">
+               </picture></div>`
+            : `<div class="hall-card__cover hall-card__cover--empty"></div>`;
         const price = hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
         return `
         <div class="hall-card" data-hall-id="${hall.id}">
@@ -252,7 +262,10 @@ function openModal(hall) {
                     ? `<span class="gallery-thumb__badge">Půdorys</span>`
                     : '';
                 return `<button type="button" class="gallery-thumb gallery-thumb--${item.type}" data-hall-id="${hall.id}" data-index="${i}" aria-label="${item.alt}">
-                    <img src="${item.thumb}" alt="${item.alt}" loading="lazy">
+                    <picture>
+                        <source type="image/webp" srcset="${item.thumb}">
+                        <img src="${item.thumbJpg}" alt="${item.alt}" loading="lazy" decoding="async">
+                    </picture>
                     ${planBadge}
                 </button>`;
             }).join('');
@@ -292,6 +305,9 @@ function renderLightbox() {
     const img = lightbox.querySelector('.lightbox__img');
     const counter = lightbox.querySelector('.lightbox__counter');
     const pdfLink = lightbox.querySelector('.lightbox__pdf');
+    img.decoding = 'async';
+    // Fallback to JPG if WebP errors (extremely rare — ~97% support)
+    img.onerror = () => { if (img.src.endsWith('.webp') && item.fullJpg) img.src = item.fullJpg; };
     img.src = item.full;
     img.alt = item.alt;
     counter.textContent = `${index + 1} / ${items.length}`;
@@ -425,19 +441,33 @@ function setSubmitting(form, loading) {
     }
 }
 
+// Lazy-load reCAPTCHA Enterprise on first interaction. Returns a promise that
+// resolves once the script is ready. Repeat calls return the same promise.
+let recaptchaReadyPromise = null;
+function loadRecaptcha() {
+    if (recaptchaReadyPromise) return recaptchaReadyPromise;
+    recaptchaReadyPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = `https://www.google.com/recaptcha/enterprise.js?render=${RECAPTCHA_SITE_KEY}`;
+        script.async = true;
+        script.onload = () => {
+            if (typeof grecaptcha !== 'undefined' && grecaptcha.enterprise) {
+                grecaptcha.enterprise.ready(resolve);
+            } else {
+                resolve();
+            }
+        };
+        script.onerror = reject;
+        document.head.appendChild(script);
+    });
+    return recaptchaReadyPromise;
+}
+
 async function getRecaptchaToken(action) {
-    if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) {
-        return '';
-    }
     try {
-        return await new Promise((resolve, reject) => {
-            grecaptcha.enterprise.ready(async () => {
-                try {
-                    const token = await grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action });
-                    resolve(token);
-                } catch (err) { reject(err); }
-            });
-        });
+        await loadRecaptcha();
+        if (typeof grecaptcha === 'undefined' || !grecaptcha.enterprise) return '';
+        return await grecaptcha.enterprise.execute(RECAPTCHA_SITE_KEY, { action });
     } catch (err) {
         console.warn('reCAPTCHA error:', err);
         return '';
@@ -518,6 +548,46 @@ function initForms() {
         const ok = await submitForm(e.target, 'modal_inquiry');
         if (ok) setTimeout(closeModal, 2000);
     });
+
+    // Lazy-load reCAPTCHA on first interaction with any form input
+    // (saves ~200 KB JS on initial page load for visitors who never submit)
+    const primeRecaptcha = () => loadRecaptcha();
+    document.querySelectorAll('#contact-form input, #contact-form textarea, #modal-form input, #modal-form textarea').forEach(el => {
+        el.addEventListener('focus', primeRecaptcha, { once: true });
+    });
+}
+
+// Defer hero video download until the page has fully loaded — the poster
+// (176 KB WebP) already shows instantly, and the video (70 MB) only starts
+// streaming after critical assets are done, so it doesn't compete for
+// bandwidth with the LCP / first-paint resources.
+function initHeroVideo() {
+    const video = document.getElementById('hero-video');
+    if (!video) return;
+    const source = video.querySelector('source[data-src]');
+    if (!source) return;
+    const start = () => {
+        source.src = source.dataset.src;
+        video.load();
+        const playPromise = video.play();
+        if (playPromise && typeof playPromise.catch === 'function') {
+            // autoplay can be blocked on some browsers; poster remains visible
+            playPromise.catch(() => {});
+        }
+    };
+    if (document.readyState === 'complete') {
+        start();
+    } else {
+        window.addEventListener('load', () => {
+            // use requestIdleCallback when available to avoid contending with
+            // any last-frame work after load
+            if ('requestIdleCallback' in window) {
+                requestIdleCallback(start, { timeout: 1500 });
+            } else {
+                setTimeout(start, 500);
+            }
+        }, { once: true });
+    }
 }
 
 // ── Smooth Scroll ───────────────────────────
@@ -545,4 +615,5 @@ document.addEventListener('DOMContentLoaded', () => {
     initKeyboard();
     initForms();
     initSmoothScroll();
+    initHeroVideo();
 });
