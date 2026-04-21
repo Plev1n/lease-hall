@@ -144,7 +144,12 @@ module.exports = async function handler(req, res) {
     const captcha = await verifyRecaptchaEnterprise(recaptchaToken, action);
     log('info', 'reCAPTCHA result', captcha);
     if (!captcha.valid) {
-        return res.status(403).json({ error: 'Ověření zabezpečení selhalo. Zkuste to prosím znovu.' });
+        // NOTE: the `reason`/`score` echo is intentional for the initial setup
+        // debugging on preview URLs. Remove before cutting over to production.
+        return res.status(403).json({
+            error: 'Ověření zabezpečení selhalo. Zkuste to prosím znovu.',
+            debug: { reason: captcha.reason, score: captcha.score },
+        });
     }
 
     const from = process.env.RESEND_FROM || 'Areál NORMA FnO <onboarding@resend.dev>';
