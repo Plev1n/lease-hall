@@ -553,9 +553,10 @@ function initForms() {
 }
 
 // Defer hero video download until the page has fully loaded — the poster
-// (173 KB WebP) already shows instantly. Mobile viewports get a much
-// smaller 320p variant (~7 MB vs 45 MB desktop) since the video sits
-// behind a text overlay and full resolution isn't perceptible.
+// (173 KB WebP) already shows instantly. Mobile viewports get a smaller
+// 360p variant (~23 MB vs 45 MB desktop) to cut cellular data usage
+// while keeping a clean 2.2 Mbps bitrate (previous 320p/700 kbps
+// version looked over-compressed on retina screens).
 function initHeroVideo() {
     const video = document.getElementById('hero-video');
     if (!video) return;
