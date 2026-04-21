@@ -5,8 +5,5 @@
   "description": "Průmyslový areál Frýdlant nad Ostravicí — pronájem hal a prostor",
   "scripts": {
     "dev": "vercel dev"
-  },
-  "dependencies": {
-    "nodemailer": "^6.9.0"
   }
 }

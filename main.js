@@ -41,8 +41,7 @@ const PRICE_PER_M2_VAT = 121;   // CZK s DPH
 
 // ── Config ──────────────────────────────────
 const RECAPTCHA_SITE_KEY = '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
-const WEB3FORMS_ACCESS_KEY = '5eaea807-5d6e-4955-a876-cefbd5b20f33';
-const API_ENDPOINT = 'https://api.web3forms.com/submit';
+const API_ENDPOINT = '/api/submit';
 
 // ── Helpers ─────────────────────────────────
 function fmt(n) {
@@ -488,17 +487,13 @@ async function submitForm(form, action) {
         const token = await getRecaptchaToken(action);
 
         const payload = {
-            access_key: WEB3FORMS_ACCESS_KEY,
-            subject: hall
-                ? `Areál NORMA FnO — poptávka ${hall}`
-                : 'Areál NORMA FnO — poptávka',
-            from_name: 'arealfno.cz',
             name,
             email,
             phone,
             hall,
             message,
-            'g-recaptcha-response': token,
+            action,
+            recaptchaToken: token,
         };
 
         const res = await fetch(API_ENDPOINT, {
@@ -513,7 +508,7 @@ async function submitForm(form, action) {
         const result = await res.json();
 
         if (!res.ok || !result.success) {
-            throw new Error(result.message || 'Chyba při odesílání.');
+            throw new Error(result.error || result.message || 'Chyba při odesílání.');
         }
 
         if (window.dataLayer) {
