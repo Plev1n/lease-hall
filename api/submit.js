@@ -43,10 +43,14 @@ async function verifyRecaptchaEnterprise(token, action) {
             }),
         });
         const data = await res.json();
+        if (!res.ok) {
+            log('error', 'reCAPTCHA Enterprise HTTP error', { status: res.status, data });
+            return { valid: false, reason: 'api_error', httpStatus: res.status, apiError: data.error };
+        }
         const tokenProps = data.tokenProperties || {};
         const riskAnalysis = data.riskAnalysis || {};
         if (!tokenProps.valid) {
-            return { valid: false, reason: tokenProps.invalidReason || 'invalid_token' };
+            return { valid: false, reason: tokenProps.invalidReason || 'invalid_token', tokenProps };
         }
         const score = typeof riskAnalysis.score === 'number' ? riskAnalysis.score : 1.0;
         return {
@@ -144,11 +148,8 @@ module.exports = async function handler(req, res) {
     const captcha = await verifyRecaptchaEnterprise(recaptchaToken, action);
     log('info', 'reCAPTCHA result', captcha);
     if (!captcha.valid) {
-        // NOTE: the `reason`/`score` echo is intentional for the initial setup
-        // debugging on preview URLs. Remove before cutting over to production.
         return res.status(403).json({
             error: 'Ověření zabezpečení selhalo. Zkuste to prosím znovu.',
-            debug: { reason: captcha.reason, score: captcha.score },
         });
     }
 
