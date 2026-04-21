@@ -6,12 +6,13 @@
 //                           (falls back to onboarding@resend.dev if unset)
 //   MAIL_TO               — recipient email address
 //   RECAPTCHA_API_KEY     — Google Cloud API key restricted to reCAPTCHA Enterprise API
-//   GCP_PROJECT_ID        — Cloud project ID (e.g. "arealfno-ads")
+//   GCP_PROJECT_ID        — Cloud project ID (e.g. "arealfnocz")
+//   RECAPTCHA_SITE_KEY    — optional override (defaults to production site key)
 // If RECAPTCHA_API_KEY or GCP_PROJECT_ID are unset, reCAPTCHA verification is skipped
 // (fail-open — same pattern as the previous backend).
 
 const LOG_PREFIX = '[lease-hall-form]';
-const RECAPTCHA_SITE_KEY = '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
+const RECAPTCHA_SITE_KEY = process.env.RECAPTCHA_SITE_KEY || '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
 const RECAPTCHA_SCORE_THRESHOLD = 0.3;
 
 function log(level, message, data = {}) {

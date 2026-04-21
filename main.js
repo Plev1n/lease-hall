@@ -553,16 +553,20 @@ function initForms() {
 }
 
 // Defer hero video download until the page has fully loaded — the poster
-// (176 KB WebP) already shows instantly, and the video (70 MB) only starts
-// streaming after critical assets are done, so it doesn't compete for
-// bandwidth with the LCP / first-paint resources.
+// (173 KB WebP) already shows instantly. Mobile viewports get a much
+// smaller 320p variant (~7 MB vs 45 MB desktop) since the video sits
+// behind a text overlay and full resolution isn't perceptible.
 function initHeroVideo() {
     const video = document.getElementById('hero-video');
     if (!video) return;
     const source = video.querySelector('source[data-src]');
     if (!source) return;
+    const mobileSrc = source.dataset.srcMobile;
+    const resolvedSrc = mobileSrc && window.matchMedia('(max-width: 767px)').matches
+        ? mobileSrc
+        : source.dataset.src;
     const start = () => {
-        source.src = source.dataset.src;
+        source.src = resolvedSrc;
         video.load();
         const playPromise = video.play();
         if (playPromise && typeof playPromise.catch === 'function') {
