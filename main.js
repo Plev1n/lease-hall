@@ -32,8 +32,8 @@ const HALLS = [
     { id: 22, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 6 },
     { id: 23, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 2 },
     { id: 26, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 7 },
-    { id: 35, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 4 },
-    { id: 36, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 2 },
+    { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 4 },
+    { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 2 },
 ];
 
 const PRICE_PER_M2 = 100;       // CZK bez DPH
