@@ -10,7 +10,7 @@ const HALLS = [
     { id: 1,  name: "Administrativní budova", type: "kanceláře", area: 120,  available: true,  description: "Kancelářské prostory v administrativní budově u vstupu do areálu." },
     { id: 2,  name: "Trafo stanice",          type: "technické",  area: 50,   available: false, description: "Technický objekt — trafostanice." },
     { id: 3,  name: "Garáže",                 type: "garáže",     area: 180,  available: true,  description: "Garážové prostory vhodné pro parkování a drobné skladování.", photos: 2 },
-    { id: 4,  name: "Hala",                   type: "hala",       area: 500,  available: true,  description: "Velká halová plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 11 },
+    { id: 4,  name: "Hala",                   type: "hala",       area: 500,  available: false, description: "Velká halová plocha vhodná pro výrobu, skladování nebo logistiku — aktuálně pronajato.", photos: 11 },
     { id: 5,  name: "Jídelna",                type: "komerční",   area: 220,  available: true,  description: "Prostor bývalé jídelny — vhodný pro gastro provoz nebo komerční využití.", photos: 19 },
     { id: 6,  name: "Stolárna",               type: "dílna",      area: 120,  available: true,  description: "Dílenský prostor s historickým využitím jako stolárna.", photos: 7 },
     { id: 7,  name: "Administrativní budova",  type: "kanceláře", area: 80,   available: true,  description: "Menší administrativní budova vhodná pro zázemí firmy.", photos: 1 },
