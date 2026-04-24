@@ -29,7 +29,8 @@ const HALLS = [
     { id: 20, name: "Hala",                    type: "hala",      area: 470,  available: true,  description: "Hala 24,3 × 19,2 m, max. výška 8,6 m, min. 6,5 m. Vhodná pro výrobu nebo skladování.", photos: 3, plan: "hala-20" },
     { id: 21, name: "Hala",                    type: "hala",      area: 1020, available: true,  description: "Dvoupatrová hala — přízemí cca 650 m² (max. výška 8,2 m, min. 6,4 m), 1. patro cca 370 m² (max. výška 4,7 m). V severozápadní části areálu.", photos: 4, plan: "hala-21" },
     // Additional halls — details na vyžádání
-    { id: 22, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 6 },
+    { id: 22.1, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání." },
+    { id: 22.2, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání." },
     { id: 23, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 2 },
     { id: 26, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 7 },
     { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 4 },
@@ -134,7 +135,7 @@ function initMap() {
     const wrapper = document.querySelector('.map-wrapper');
 
     document.querySelectorAll('.building').forEach(g => {
-        const id = parseInt(g.dataset.hallId);
+        const id = parseFloat(g.dataset.hallId);
         const hall = getHall(id);
         if (!hall) return;
 
@@ -210,7 +211,7 @@ function renderHallCards(filter = 'all') {
     // Click handlers
     grid.querySelectorAll('.hall-card').forEach(card => {
         card.addEventListener('click', () => {
-            const hall = getHall(parseInt(card.dataset.hallId));
+            const hall = getHall(parseFloat(card.dataset.hallId));
             if (hall) openModal(hall);
         });
     });
@@ -343,7 +344,7 @@ function initGalleryLightbox() {
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.gallery-thumb');
         if (!btn) return;
-        const hallId = parseInt(btn.dataset.hallId);
+        const hallId = parseFloat(btn.dataset.hallId);
         const index = parseInt(btn.dataset.index);
         const hall = getHall(hallId);
         if (hall) openLightbox(hall, index);
