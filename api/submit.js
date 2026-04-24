@@ -4,7 +4,8 @@
 //   RESEND_API_KEY        — Resend API key (re_…)
 //   RESEND_FROM           — sender, e.g. "Areál NORMA FnO <pronajem@arealfno.cz>"
 //                           (falls back to onboarding@resend.dev if unset)
-//   MAIL_TO               — recipient email address
+//   MAIL_TO               — recipient email address (default: rkmat@rkmat.cz)
+//   MAIL_BCC              — blind copy address (default: dav.plev@seznam.cz)
 //   RECAPTCHA_API_KEY     — Google Cloud API key restricted to reCAPTCHA Enterprise API
 //   GCP_PROJECT_ID        — Cloud project ID (e.g. "arealfnocz")
 //   RECAPTCHA_SITE_KEY    — optional override (defaults to production site key)
@@ -102,16 +103,18 @@ function buildEmailHtml({ name, email, phone, hall, message }) {
     </div>`;
 }
 
-async function sendEmailViaResend({ from, to, replyTo, subject, html, text }) {
+async function sendEmailViaResend({ from, to, bcc, replyTo, subject, html, text }) {
     const apiKey = process.env.RESEND_API_KEY;
     if (!apiKey) throw new Error('RESEND_API_KEY not set');
+    const payload = { from, to, reply_to: replyTo, subject, html, text };
+    if (bcc) payload.bcc = bcc;
     const res = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
             'Authorization': `Bearer ${apiKey}`,
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ from, to, reply_to: replyTo, subject, html, text }),
+        body: JSON.stringify(payload),
     });
     const responseText = await res.text();
     if (!res.ok) {
@@ -155,11 +158,8 @@ module.exports = async function handler(req, res) {
     }
 
     const from = process.env.RESEND_FROM || 'Areál NORMA FnO <onboarding@resend.dev>';
-    const to = process.env.MAIL_TO;
-    if (!to) {
-        log('error', 'MAIL_TO not set');
-        return res.status(500).json({ error: 'Server není správně nakonfigurován. Kontaktujte nás prosím telefonicky.' });
-    }
+    const to = process.env.MAIL_TO || 'rkmat@rkmat.cz';
+    const bcc = process.env.MAIL_BCC || 'dav.plev@seznam.cz';
     const subject = data.hall
         ? `Poptávka: ${data.hall} — ${data.name}`
         : `Poptávka z webu — ${data.name}`;
@@ -167,12 +167,13 @@ module.exports = async function handler(req, res) {
         const result = await sendEmailViaResend({
             from,
             to,
+            bcc,
             replyTo: data.email,
             subject,
             html: buildEmailHtml(data),
             text: `Jméno: ${data.name}\nE-mail: ${data.email}\nTelefon: ${data.phone}\nProstor: ${data.hall}\n\nZpráva:\n${data.message}\n\n— Odesláno z arealfno.cz`,
         });
-        log('info', 'Email sent', { to, subject, resendId: result.id });
+        log('info', 'Email sent', { to, bcc, subject, resendId: result.id });
         return res.status(200).json({ success: true, message: 'Poptávka odeslána!' });
     } catch (err) {
         log('error', 'Email send failed', { error: err.message });
