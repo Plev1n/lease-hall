@@ -65,7 +65,16 @@
             "opens": "07:00",
             "closes": "16:00"
         },
-        "priceRange": "od 100 Kč/m²"
+        "priceRange": "od 100 Kč/m²",
+        "amenityFeature": [
+            { "@type": "LocationFeatureSpecification", "name": "Elektrický příkon 3 MW — trafostanice 3× 1000 kW", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Napojení na vlastní vysokotlakou regulační stanici zemního plynu", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Vlastní zdroj pitné a technologické vody", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Celková výměra areálu 43 000 m²", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Uzavřený oplocený areál s bránou", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Napojení na veřejnou kanalizaci", "value": true },
+            { "@type": "LocationFeatureSpecification", "name": "Bývalý výrobní a skladovací areál s prověřenou infrastrukturou", "value": true }
+        ]
     }
     </script>
     <script type="application/ld+json">
@@ -144,11 +153,73 @@
         </a>
     </header>
 
+    <!-- FEATURES / KEY INFRASTRUCTURE -->
+    <section class="features-section" id="vybaveni" aria-labelledby="vybaveni-title">
+        <div class="container">
+            <div class="section-header">
+                <span class="section-header__tag">01</span>
+                <h2 class="section-header__title" id="vybaveni-title">Vybavení areálu</h2>
+                <p class="section-header__desc">Průmyslová infrastruktura ve&nbsp;Frýdlantě nad&nbsp;Ostravicí — energie, plyn, voda i&nbsp;bezpečnost na&nbsp;43&nbsp;000&nbsp;m².</p>
+            </div>
+            <ul class="features-grid" role="list">
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+                    </div>
+                    <h3 class="feature__title">Energie 3&nbsp;MW</h3>
+                    <p class="feature__desc">Vlastní trafostanice 3&nbsp;×&nbsp;1&nbsp;000&nbsp;kW — dostatek výkonu pro těžkou výrobu i&nbsp;velkoodběr.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
+                    </div>
+                    <h3 class="feature__title">Plyn z&nbsp;VTL stanice</h3>
+                    <p class="feature__desc">Napojení na&nbsp;vlastní vysokotlakou regulační stanici zemního plynu — bez&nbsp;omezení příkonu z&nbsp;veřejné sítě.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.69 5.66 9.03a9 9 0 1 0 12.72 0Z"/></svg>
+                    </div>
+                    <h3 class="feature__title">Vlastní zdroj vody</h3>
+                    <p class="feature__desc">Nezávislý zdroj pitné i&nbsp;technologické vody přímo v&nbsp;areálu — úspora provozních nákladů.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+                    </div>
+                    <h3 class="feature__title">43&nbsp;000&nbsp;m² plochy</h3>
+                    <p class="feature__desc">Rozsáhlý průmyslový areál s&nbsp;dostatkem manipulační, parkovací i&nbsp;skladovací plochy.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+                    </div>
+                    <h3 class="feature__title">Uzavřený areál</h3>
+                    <p class="feature__desc">Oplocený objekt s&nbsp;uzamykatelnou bránou — zvýšená bezpečnost majetku i&nbsp;technologií.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M2 18c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/><path d="M2 6c2 0 2-2 4-2s2 2 4 2 2-2 4-2 2 2 4 2 2-2 4-2"/></svg>
+                    </div>
+                    <h3 class="feature__title">Veřejná kanalizace</h3>
+                    <p class="feature__desc">Napojení odpadních i&nbsp;dešťových vod na&nbsp;veřejnou kanalizační síť — bez&nbsp;vlastní ČOV.</p>
+                </li>
+                <li class="feature">
+                    <div class="feature__icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 20h20"/><path d="M4 20V8l6-4v16"/><path d="M10 9l6 3v8"/><path d="M16 14l6 2v4"/><path d="M10 20v-4h4v4"/></svg>
+                    </div>
+                    <h3 class="feature__title">Prověřená infrastruktura</h3>
+                    <p class="feature__desc">Bývalý výrobní a&nbsp;skladovací areál — fungující haly, přípojky a&nbsp;zázemí pro okamžité spuštění provozu.</p>
+                </li>
+            </ul>
+        </div>
+    </section>
+
     <!-- INTERACTIVE MAP -->
     <section class="map-section" id="mapa">
         <div class="container">
             <div class="section-header">
-                <span class="section-header__tag">01</span>
+                <span class="section-header__tag">02</span>
                 <h2 class="section-header__title">Mapa areálu</h2>
                 <p class="section-header__desc">Klikněte na budovu pro zobrazení detailu a poptávku pronájmu.</p>
             </div>
@@ -281,7 +352,7 @@
     <section class="halls-section" id="prostory">
         <div class="container">
             <div class="section-header">
-                <span class="section-header__tag">02</span>
+                <span class="section-header__tag">03</span>
                 <h2 class="section-header__title">Nabídka prostor</h2>
                 <p class="section-header__desc">Přehled všech dostupných prostor k&nbsp;pronájmu či prodeji.</p>
             </div>
@@ -303,7 +374,7 @@
             <div class="contact-grid">
                 <div class="contact-info">
                     <div class="section-header section-header--left">
-                        <span class="section-header__tag">03</span>
+                        <span class="section-header__tag">04</span>
                         <h2 class="section-header__title">Kontakt</h2>
                     </div>
                     <p class="contact-info__text">Máte zájem o&nbsp;pronájem nebo koupi? Napište nám nebo zavolejte. Rádi vám prostory ukážeme osobně.</p>
