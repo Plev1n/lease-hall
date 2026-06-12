@@ -7,7 +7,8 @@
 //         plan   = floor-plan PDF path in assets/plans/ (optional)
 //         areaOnRequest = true → "na vyžádání" instead of a number
 const HALLS = [
-    { id: 1,  name: "Administrativní budova", type: "kanceláře", area: 120,  available: true,  description: "Kancelářské prostory v administrativní budově u vstupu do areálu." },
+    // Hidden per request (2026-06-12):
+    // { id: 1,  name: "Administrativní budova", type: "kanceláře", area: 120,  available: true,  description: "Kancelářské prostory v administrativní budově u vstupu do areálu." },
     { id: 2,  name: "Trafo stanice",          type: "technické",  area: 50,   available: false, description: "Technický objekt — trafostanice." },
     { id: 3,  name: "Garáže",                 type: "garáže",     area: 180,  available: true,  description: "Garážové prostory vhodné pro parkování a drobné skladování.", photos: 2 },
     { id: 4,  name: "Hala",                   type: "hala",       area: 500,  available: false, description: "Velká halová plocha vhodná pro výrobu, skladování nebo logistiku — aktuálně pronajato.", photos: 11 },
@@ -18,13 +19,14 @@ const HALLS = [
     { id: 9,  name: "2 patrová hala",          type: "hala",      area: 1060, available: true,  description: "Dvoupatrová hala 35,8 × 14,8 m. Přízemí: max. výška 4 m. 1. patro: max. výška 3,6 m. Celková plocha cca 1 060 m² (530 m² na patro).", photos: 3, plan: "hala-9" },
     { id: 10, name: "Hala",                    type: "hala",      area: 540,  available: true,  description: "Hala 38,2 × 14,9 m, max. výška 7,5 m, min. 4 m. Halová plocha v centrální části areálu.", photos: 1, plan: "hala-10" },
     { id: 11, name: "Hala",                    type: "hala",      area: 660,  available: false, description: "Hala 44 × 15 m, max. výška 5,8 m, min. 3,8 m — aktuálně pronajato.", plan: "hala-11" },
-    { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
+    // Hidden per request (2026-06-12):
+    // { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
     { id: 13, name: "Hala a úpravna vody",     type: "hala",      area: 400,  available: false, description: "Hala s úpravnou vody — aktuálně pronajato." },
     { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
     { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 4 },
     { id: 16, name: "Hala",                    type: "hala",      area: 1630, available: true,  description: "Dlouhá hala 100 × 16,3 m. Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 3, plan: "hala-16" },
     { id: 17, name: "Hala",                    type: "hala",      area: 225,  available: true,  description: "Hala 18,2 × 12,4 m, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 1, plan: "hala-17" },
-    { id: 18, name: "Hala",                    type: "hala",      area: 1930, available: true,  description: "Největší hala v areálu, 77 × 25 m, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 7, plan: "hala-18" },
+    { id: 18, name: "Hala",                    type: "hala",      area: 1930, available: true,  description: "Největší hala v areálu, 77 × 25 m, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 4, plan: "hala-18" },
     { id: 19, name: "Hala",                    type: "hala",      area: 770,  available: true,  description: "Dvoupatrový objekt — přízemí cca 290 m² (max. výška 8,5 m), 1. patro cca 480 m² (max. výška 8,5 m / 2,5 m). Středně velká hala v centrální části areálu.", photos: 6, plan: "hala-19" },
     { id: 20, name: "Hala",                    type: "hala",      area: 470,  available: false, description: "Hala 24,3 × 19,2 m, max. výška 8,6 m, min. 6,5 m — aktuálně pronajato.", photos: 3, plan: "hala-20" },
     { id: 21, name: "Hala",                    type: "hala",      area: 1020, available: true,  description: "Dvoupatrová hala — přízemí cca 650 m² (max. výška 8,2 m, min. 6,4 m), 1. patro cca 370 m² (max. výška 4,7 m). V severozápadní části areálu.", photos: 4, plan: "hala-21" },
