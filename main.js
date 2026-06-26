@@ -16,31 +16,41 @@ const HALLS = [
     { id: 6,  name: "Stolárna",               type: "dílna",      area: 120,  available: true,  description: "Dílenský prostor s historickým využitím jako stolárna.", photos: 7 },
     { id: 7,  name: "Administrativní budova",  type: "kanceláře", area: 80,   available: false, description: "Menší administrativní budova vhodná pro zázemí firmy — aktuálně pronajato.", photos: 1 },
     { id: 8,  name: "3 patrová budova",        type: "kanceláře", area: 350,  available: true,  description: "Třípatrová budova s kancelářskými prostory na každém patře.", photos: 5 },
-    { id: 9,  name: "2 patrová hala",          type: "hala",      area: 1060, available: true,  description: "Dvoupatrová hala 35,8 × 14,8 m. Přízemí: max. výška 4 m. 1. patro: max. výška 3,6 m. Celková plocha cca 1 060 m² (530 m² na patro).", photos: 3, plan: "hala-9" },
-    { id: 10, name: "Hala",                    type: "hala",      area: 540,  available: true,  description: "Hala 38,2 × 14,9 m, max. výška 7,5 m, min. 4 m. Halová plocha v centrální části areálu.", photos: 1, plan: "hala-10" },
+    { id: 9,  name: "2 patrová hala",          type: "hala",      area: 1060, available: true,  description: "Dvoupatrová hala 35,8 × 14,8 m. Přízemí: max. výška 4 m. 1. patro: max. výška 3,6 m. Celková plocha cca 1 060 m² (530 m² na patro).", photos: 4, plan: "hala-9" },
+    { id: 10, name: "Hala",                    type: "hala",      area: 540,  available: true,  description: "Hala 38,2 × 14,9 m, max. výška 7,5 m, min. 4 m. Halová plocha v centrální části areálu.", photos: 3, plan: "hala-10" },
     { id: 11, name: "Hala",                    type: "hala",      area: 660,  available: false, description: "Hala 44 × 15 m, max. výška 5,8 m, min. 3,8 m — aktuálně pronajato.", plan: "hala-11" },
     // Hidden per request (2026-06-12):
     // { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
     { id: 13, name: "Hala a úpravna vody",     type: "hala",      area: 400,  available: false, description: "Hala s úpravnou vody — aktuálně pronajato." },
     { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
-    { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 4 },
-    { id: 16, name: "Hala",                    type: "hala",      area: 1630, available: true,  description: "Dlouhá hala 100 × 16,3 m. Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 3, plan: "hala-16" },
-    { id: 17, name: "Hala",                    type: "hala",      area: 225,  available: true,  description: "Hala 18,2 × 12,4 m, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 1, plan: "hala-17" },
-    { id: 18, name: "Hala",                    type: "hala",      area: 1930, available: true,  description: "Největší hala v areálu, 77 × 25 m, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 4, plan: "hala-18" },
-    { id: 19, name: "Hala",                    type: "hala",      area: 770,  available: true,  description: "Dvoupatrový objekt — přízemí cca 290 m² (max. výška 8,5 m), 1. patro cca 480 m² (max. výška 8,5 m / 2,5 m). Středně velká hala v centrální části areálu.", photos: 6, plan: "hala-19" },
-    { id: 20, name: "Hala",                    type: "hala",      area: 470,  available: false, description: "Hala 24,3 × 19,2 m, max. výška 8,6 m, min. 6,5 m — aktuálně pronajato.", photos: 3, plan: "hala-20" },
-    { id: 21, name: "Hala",                    type: "hala",      area: 1020, available: true,  description: "Dvoupatrová hala — přízemí cca 650 m² (max. výška 8,2 m, min. 6,4 m), 1. patro cca 370 m² (max. výška 4,7 m). V severozápadní části areálu.", photos: 4, plan: "hala-21" },
+    { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 8 },
+    { id: 16, name: "Hala",                    type: "hala",      area: 1630, available: true,  description: "Dlouhá hala 100 × 16,3 m. Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 8, plan: "hala-16" },
+    { id: 17, name: "Hala",                    type: "hala",      area: 225,  available: true,  description: "Hala 18,2 × 12,4 m, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 3, plan: "hala-17" },
+    { id: 18, name: "Hala",                    type: "hala",      area: 1930, available: true,  description: "Největší hala v areálu, 77 × 25 m, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 10, plan: "hala-18" },
+    { id: 19, name: "Hala",                    type: "hala",      area: 770,  available: true,  description: "Dvoupatrový objekt — přízemí cca 290 m² (max. výška 8,5 m), 1. patro cca 480 m² (max. výška 8,5 m / 2,5 m). Středně velká hala v centrální části areálu.", photos: 8, plan: "hala-19" },
+    { id: 20, name: "Hala",                    type: "hala",      area: 470,  available: false, description: "Hala 24,3 × 19,2 m, max. výška 8,6 m, min. 6,5 m — aktuálně pronajato.", photos: 1, plan: "hala-20" },
+    { id: 21, name: "Hala",                    type: "hala",      area: 1020, available: true,  description: "Dvoupatrová hala — přízemí cca 650 m² (max. výška 8,2 m, min. 6,4 m), 1. patro cca 370 m² (max. výška 4,7 m). V severozápadní části areálu.", photos: 5, plan: "hala-21" },
     // Additional halls — details na vyžádání
     { id: 22.1, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor — aktuálně pronajato.", photos: 3 },
     { id: 22.2, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor — aktuálně pronajato.", photos: 5 },
-    { id: 23, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor — aktuálně pronajato.", photos: 2 },
+    { id: 23, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor — aktuálně pronajato.", photos: 4 },
+    { id: 24, name: "Manipulační plocha",      type: "manipulační plocha", area: null, areaOnRequest: true, available: true, offer: 'rent', description: "Zpevněná manipulační plocha vhodná k parkování techniky či manipulaci s materiálem — rozměry a detaily na vyžádání.", photos: 3 },
     { id: 26, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 7 },
-    { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 4 },
-    { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 2 },
+    { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 8 },
+    { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 7 },
 ];
 
-const PRICE_PER_M2 = 100;       // CZK bez DPH
+const PRICE_PER_M2 = 100;       // CZK bez DPH (pronájem / měsíc)
 const PRICE_PER_M2_VAT = 121;   // CZK s DPH
+const SALE_PRICE_PER_M2 = 14000; // CZK / m² — orientační prodejní cena hal (#16+)
+
+// Pseudo-položka pro leteckou galerii celého areálu (assets/photos/areal/)
+const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled', photos: 8 };
+
+// Zařazení haly: id >= 16 → prodej, jinak pronájem. Výjimka přes hall.offer (#24 → 'rent').
+function offerOf(hall) {
+    return hall.offer || (hall.id >= 16 ? 'sale' : 'rent');
+}
 
 // ── Config ──────────────────────────────────
 const RECAPTCHA_SITE_KEY = '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
@@ -52,6 +62,7 @@ function fmt(n) {
 }
 
 function getHall(id) {
+    if (id === 'areal') return AREAL_GALLERY;
     return HALLS.find(h => h.id === id);
 }
 
@@ -81,7 +92,9 @@ function galleryItems(hall) {
                 fullJpg: photoUrl(hall, i, false, 'jpg'),
                 thumb: photoUrl(hall, i, true, 'webp'),
                 thumbJpg: photoUrl(hall, i, true, 'jpg'),
-                alt: `${hall.name} č. ${hall.id} k pronájmu – Areál NORMA FnO, Frýdlant nad Ostravicí – foto ${i}`,
+                alt: hall.id === 'areal'
+                    ? `Areál NORMA FnO, Frýdlant nad Ostravicí – letecký pohled ${i}`
+                    : `${hall.name} #${hall.id} – Areál NORMA FnO, Frýdlant nad Ostravicí – foto ${i}`,
             });
         }
     }
@@ -107,6 +120,7 @@ function getTypeLabel(type) {
         'garáže': 'Garáže',
         'dílna': 'Dílna',
         'zastřešená plocha': 'Zastřešená plocha',
+        'manipulační plocha': 'Manipulační plocha',
         'technické': 'Technické zázemí',
     };
     return labels[type] || type;
@@ -141,19 +155,26 @@ function initMap() {
         const hall = getHall(id);
         if (!hall) return;
 
+        const offer = offerOf(hall);
         if (!hall.available) {
-            g.classList.add('unavailable');
+            g.classList.add('unavailable', 'is-rented');
+        } else {
+            g.classList.add(offer === 'sale' ? 'is-sale' : 'is-rent');
         }
 
         // Hover tooltip
         g.addEventListener('mouseenter', (e) => {
             tooltipName.textContent = `${hall.name} #${hall.id}`;
             if (!hall.available) {
-                tooltipArea.textContent = 'Pronajato';
-            } else if (hall.areaOnRequest) {
-                tooltipArea.textContent = 'Plocha na vyžádání';
+                tooltipArea.textContent = offer === 'sale' ? 'Pronajato — na prodej i s nájemcem' : 'Pronajato';
+            } else if (offer === 'sale') {
+                tooltipArea.textContent = hall.areaOnRequest
+                    ? 'Na prodej — cena na vyžádání'
+                    : `${fmt(hall.area)} m² — orientačně ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
             } else {
-                tooltipArea.textContent = `${fmt(hall.area)} m² — ${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
+                tooltipArea.textContent = hall.areaOnRequest
+                    ? 'K pronájmu — na vyžádání'
+                    : `${fmt(hall.area)} m² — ${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
             }
             tooltip.classList.add('visible');
         });
@@ -172,7 +193,7 @@ function initMap() {
 
         // Click to open modal
         g.addEventListener('click', () => {
-            if (hall.available) {
+            if (hall.available || offer === 'sale') {
                 openModal(hall);
             }
         });
@@ -180,38 +201,56 @@ function initMap() {
 }
 
 // ── Hall Cards ──────────────────────────────
-function renderHallCards(filter = 'all') {
-    const grid = document.getElementById('halls-grid');
-    const available = HALLS.filter(h => h.available && matchesFilter(h, filter));
+function priceTag(hall, mode) {
+    if (mode === 'sale') {
+        return hall.areaOnRequest ? 'cena na vyžádání' : `orientačně ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+    }
+    return hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
+}
 
-    grid.innerHTML = available.map(hall => {
-        const cover = hall.photos
-            ? `<div class="hall-card__cover"><picture>
-                    <source type="image/webp" srcset="${photoUrl(hall, 1, true, 'webp')}">
-                    <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} — náhled" loading="lazy" decoding="async" class="hall-card__cover-img">
-               </picture></div>`
-            : `<div class="hall-card__cover hall-card__cover--empty"></div>`;
-        const price = hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
-        return `
-        <div class="hall-card" data-hall-id="${hall.id}">
-            ${cover}
-            <div class="hall-card__body">
-                <div class="hall-card__header">
-                    <span class="hall-card__number">${hall.id}</span>
-                    <span class="hall-card__tag">${getTypeLabel(hall.type)}</span>
-                </div>
-                <div class="hall-card__name">${hall.name}</div>
-                <div class="hall-card__type">${hall.description}</div>
-                <div class="hall-card__meta">
-                    <span class="hall-card__area">${areaLabel(hall)}</span>
-                    <span class="hall-card__price">${price}</span>
-                </div>
+function hallCardHtml(hall, mode) {
+    const badge = (mode === 'sale' && !hall.available)
+        ? '<span class="hall-card__badge">Pronajato · na&nbsp;prodej i&nbsp;s&nbsp;nájemcem</span>' : '';
+    const cover = hall.photos
+        ? `<div class="hall-card__cover"><picture>
+                <source type="image/webp" srcset="${photoUrl(hall, 1, true, 'webp')}">
+                <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} #${hall.id} — náhled" loading="lazy" decoding="async" class="hall-card__cover-img">
+           </picture>${badge}</div>`
+        : `<div class="hall-card__cover hall-card__cover--empty">${badge}</div>`;
+    return `
+    <div class="hall-card" data-hall-id="${hall.id}">
+        ${cover}
+        <div class="hall-card__body">
+            <div class="hall-card__header">
+                <span class="hall-card__number">${hall.id}</span>
+                <span class="hall-card__tag">${getTypeLabel(hall.type)}</span>
             </div>
-        </div>`;
-    }).join('');
+            <div class="hall-card__name">${hall.name}</div>
+            <div class="hall-card__type">${hall.description}</div>
+            <div class="hall-card__meta">
+                <span class="hall-card__area">${areaLabel(hall)}</span>
+                <span class="hall-card__price hall-card__price--${mode}">${priceTag(hall, mode)}</span>
+            </div>
+        </div>
+    </div>`;
+}
 
-    // Click handlers
-    grid.querySelectorAll('.hall-card').forEach(card => {
+function renderListings() {
+    const saleGrid = document.getElementById('prodej-hal-grid');
+    const rentGrid = document.getElementById('pronajem-hal-grid');
+
+    if (saleGrid) {
+        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) =>
+            a.available === b.available ? (b.area || 0) - (a.area || 0) : (a.available ? -1 : 1));
+        saleGrid.innerHTML = sale.map(h => hallCardHtml(h, 'sale')).join('');
+    }
+    if (rentGrid) {
+        const rent = HALLS.filter(h => offerOf(h) === 'rent' && h.available)
+            .sort((a, b) => (b.area || 0) - (a.area || 0));
+        rentGrid.innerHTML = rent.map(h => hallCardHtml(h, 'rent')).join('');
+    }
+
+    document.querySelectorAll('#prodej-hal-grid .hall-card, #pronajem-hal-grid .hall-card').forEach(card => {
         card.addEventListener('click', () => {
             const hall = getHall(parseFloat(card.dataset.hallId));
             if (hall) openModal(hall);
@@ -219,36 +258,88 @@ function renderHallCards(filter = 'all') {
     });
 }
 
-function initFilters() {
-    document.querySelectorAll('.filter-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            renderHallCards(btn.dataset.filter);
-        });
-    });
+// Aerial gallery of the whole areál (primary "Prodej celého areálu" section)
+function renderArealGallery() {
+    const grid = document.getElementById('areal-gallery');
+    if (!grid) return;
+    grid.innerHTML = galleryItems(AREAL_GALLERY).map((item, i) =>
+        `<button type="button" class="gallery-thumb areal-thumb" data-hall-id="areal" data-index="${i}" aria-label="${item.alt}">
+            <picture>
+                <source type="image/webp" srcset="${item.thumb}">
+                <img src="${item.thumbJpg}" alt="${item.alt}" loading="lazy" decoding="async">
+            </picture>
+        </button>`).join('');
 }
 
 // ── Contact Form Select ─────────────────────
 function populateFormSelect() {
     const select = document.getElementById('cf-hall');
-    HALLS.filter(h => h.available).forEach(hall => {
-        const option = document.createElement('option');
-        const label = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
-        option.value = label;
-        option.textContent = label;
-        select.appendChild(option);
+    if (!select) return;
+
+    const arealOpt = document.createElement('option');
+    arealOpt.value = 'Celý areál (43 000 m²)';
+    arealOpt.textContent = 'Celý areál (43 000 m²)';
+    select.appendChild(arealOpt);
+
+    const addGroup = (label, halls) => {
+        if (!halls.length) return;
+        const group = document.createElement('optgroup');
+        group.label = label;
+        halls.forEach(hall => {
+            const option = document.createElement('option');
+            const text = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
+            option.value = text;
+            option.textContent = text;
+            group.appendChild(option);
+        });
+        select.appendChild(group);
+    };
+
+    addGroup('Prodej hal', HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => (b.area || 0) - (a.area || 0)));
+    addGroup('Pronájem hal', HALLS.filter(h => offerOf(h) === 'rent' && h.available).sort((a, b) => (b.area || 0) - (a.area || 0)));
+}
+
+// "Poptat areál" CTA → předvybere "Celý areál" v kontaktním formuláři
+function initArealCta() {
+    document.querySelectorAll('[data-prefill-hall]').forEach(el => {
+        el.addEventListener('click', () => {
+            const select = document.getElementById('cf-hall');
+            if (select) select.value = el.dataset.prefillHall;
+        });
     });
 }
 
 // ── Modal ───────────────────────────────────
 function openModal(hall) {
     const overlay = document.getElementById('modal-overlay');
+    const mode = offerOf(hall);
     document.getElementById('modal-type').textContent = getTypeLabel(hall.type);
     document.getElementById('modal-title').textContent = `${hall.name} #${hall.id}`;
     document.getElementById('modal-area').textContent = areaLabel(hall);
-    document.getElementById('modal-price').textContent = priceLabel(hall, false);
-    document.getElementById('modal-price-vat').textContent = priceLabel(hall, true);
+
+    const priceEl = document.getElementById('modal-price');
+    const priceVatEl = document.getElementById('modal-price-vat');
+    const priceLabelEl = document.getElementById('modal-price-label');
+    const priceVatLabelEl = document.getElementById('modal-price-vat-label');
+    if (mode === 'sale') {
+        priceEl.textContent = hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+        priceVatEl.textContent = hall.areaOnRequest ? '—' : `${fmt(SALE_PRICE_PER_M2)} Kč`;
+        if (priceLabelEl) priceLabelEl.textContent = 'Orientační cena';
+        if (priceVatLabelEl) priceVatLabelEl.textContent = 'Cena za m²';
+    } else {
+        priceEl.textContent = priceLabel(hall, false);
+        priceVatEl.textContent = priceLabel(hall, true);
+        if (priceLabelEl) priceLabelEl.textContent = 'Měsíčně bez DPH';
+        if (priceVatLabelEl) priceVatLabelEl.textContent = 'Měsíčně s DPH';
+    }
+
+    const noteEl = document.getElementById('modal-note');
+    if (noteEl) {
+        const showNote = mode === 'sale' && !hall.available;
+        noteEl.textContent = showNote ? 'Aktuálně pronajato — na prodej i se stávajícím nájemcem (zajímavé jako investice).' : '';
+        noteEl.hidden = !showNote;
+    }
+
     document.getElementById('modal-description').textContent = hall.description;
     document.getElementById('mf-hall').value = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
 
@@ -346,9 +437,9 @@ function initGalleryLightbox() {
     document.addEventListener('click', (e) => {
         const btn = e.target.closest('.gallery-thumb');
         if (!btn) return;
-        const hallId = parseFloat(btn.dataset.hallId);
+        const raw = btn.dataset.hallId;
         const index = parseInt(btn.dataset.index);
-        const hall = getHall(hallId);
+        const hall = getHall(raw === 'areal' ? 'areal' : parseFloat(raw));
         if (hall) openLightbox(hall, index);
     });
 
@@ -610,8 +701,9 @@ function initSmoothScroll() {
 document.addEventListener('DOMContentLoaded', () => {
     updateHeroStats();
     initMap();
-    renderHallCards();
-    initFilters();
+    renderListings();
+    renderArealGallery();
+    initArealCta();
     populateFormSelect();
     initModal();
     initGalleryLightbox();
