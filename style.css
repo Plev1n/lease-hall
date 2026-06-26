@@ -625,7 +625,7 @@ button, input, select, textarea {
     position: absolute;
     inset: 0;
     z-index: 1;
-    background: linear-gradient(180deg, rgba(10,10,11,0.5) 0%, rgba(10,10,11,0.3) 35%, rgba(10,10,11,0.92) 100%);
+    background: linear-gradient(180deg, rgba(10,10,11,0.5) 0%, rgba(10,10,11,0.42) 26%, rgba(10,10,11,0.72) 60%, rgba(10,10,11,0.95) 100%);
 }
 .areal-banner__content {
     position: relative;
@@ -638,20 +638,23 @@ button, input, select, textarea {
     font-size: clamp(2rem, 5vw, 3.2rem);
     line-height: 1.05;
     margin: 14px 0 18px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.55);
 }
 .areal-banner__lead {
     font-size: 1.05rem;
-    color: var(--text-muted);
+    color: rgba(255, 255, 255, 0.94);
     line-height: 1.6;
     margin-bottom: 18px;
     max-width: 640px;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.7);
 }
 .areal-banner__price {
     font-family: var(--font-mono);
     font-size: 1.1rem;
-    color: var(--accent);
+    color: var(--accent-hover);
     margin-bottom: 28px;
     letter-spacing: 0.02em;
+    text-shadow: 0 1px 5px rgba(0,0,0,0.7);
 }
 .areal-gallery {
     display: grid;
