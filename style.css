@@ -630,6 +630,7 @@ button, input, select, textarea {
 .contact-detail__value {
     font-weight: 500;
     color: var(--text);
+    display: block;
 }
 a.contact-detail__value:hover { color: var(--accent); }
 
