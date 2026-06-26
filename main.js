@@ -294,8 +294,8 @@ function populateFormSelect() {
         select.appendChild(group);
     };
 
-    addGroup('Prodej hal', HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => (b.area || 0) - (a.area || 0)));
-    addGroup('Pronájem hal', HALLS.filter(h => offerOf(h) === 'rent' && h.available).sort((a, b) => (b.area || 0) - (a.area || 0)));
+    addGroup('Prodej hal', HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => a.id - b.id));
+    addGroup('Pronájem hal', HALLS.filter(h => offerOf(h) === 'rent' && h.available).sort((a, b) => a.id - b.id));
 }
 
 // "Poptat areál" CTA → předvybere "Celý areál" v kontaktním formuláři
