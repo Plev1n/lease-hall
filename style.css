@@ -612,9 +612,7 @@ button, input, select, textarea {
 .areal-section { padding: 0 0 100px; }
 .areal-banner {
     position: relative;
-    aspect-ratio: 5 / 2;
-    min-height: 420px;
-    max-height: 600px;
+    min-height: clamp(420px, 40vw, 640px);
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
