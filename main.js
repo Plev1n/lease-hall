@@ -156,21 +156,23 @@ function initMap() {
         if (!hall) return;
 
         const offer = offerOf(hall);
-        if (!hall.available) {
-            g.classList.add('unavailable', 'is-rented');
+        if (offer === 'sale') {
+            g.classList.add('is-sale');
+        } else if (hall.available) {
+            g.classList.add('is-rent');
         } else {
-            g.classList.add(offer === 'sale' ? 'is-sale' : 'is-rent');
+            g.classList.add('unavailable');
         }
 
         // Hover tooltip
         g.addEventListener('mouseenter', (e) => {
             tooltipName.textContent = `${hall.name} #${hall.id}`;
-            if (!hall.available) {
-                tooltipArea.textContent = offer === 'sale' ? 'Pronajato — na prodej i s nájemcem' : 'Pronajato';
-            } else if (offer === 'sale') {
+            if (offer === 'sale') {
                 tooltipArea.textContent = hall.areaOnRequest
                     ? 'Na prodej — cena na vyžádání'
-                    : `${fmt(hall.area)} m² — orientačně ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+                    : `${fmt(hall.area)} m² — ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+            } else if (!hall.available) {
+                tooltipArea.textContent = 'Pronajato';
             } else {
                 tooltipArea.textContent = hall.areaOnRequest
                     ? 'K pronájmu — na vyžádání'
@@ -203,20 +205,18 @@ function initMap() {
 // ── Hall Cards ──────────────────────────────
 function priceTag(hall, mode) {
     if (mode === 'sale') {
-        return hall.areaOnRequest ? 'cena na vyžádání' : `orientačně ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+        return hall.areaOnRequest ? 'cena na vyžádání' : `${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
     }
     return hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
 }
 
 function hallCardHtml(hall, mode) {
-    const badge = (mode === 'sale' && !hall.available)
-        ? '<span class="hall-card__badge">Pronajato · na&nbsp;prodej i&nbsp;s&nbsp;nájemcem</span>' : '';
     const cover = hall.photos
         ? `<div class="hall-card__cover"><picture>
                 <source type="image/webp" srcset="${photoUrl(hall, 1, true, 'webp')}">
                 <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} #${hall.id} — náhled" loading="lazy" decoding="async" class="hall-card__cover-img">
-           </picture>${badge}</div>`
-        : `<div class="hall-card__cover hall-card__cover--empty">${badge}</div>`;
+           </picture></div>`
+        : `<div class="hall-card__cover hall-card__cover--empty"></div>`;
     return `
     <div class="hall-card" data-hall-id="${hall.id}">
         ${cover}
@@ -240,8 +240,7 @@ function renderListings() {
     const rentGrid = document.getElementById('pronajem-hal-grid');
 
     if (saleGrid) {
-        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) =>
-            a.available === b.available ? (b.area || 0) - (a.area || 0) : (a.available ? -1 : 1));
+        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => (b.area || 0) - (a.area || 0));
         saleGrid.innerHTML = sale.map(h => hallCardHtml(h, 'sale')).join('');
     }
     if (rentGrid) {
@@ -324,7 +323,7 @@ function openModal(hall) {
     if (mode === 'sale') {
         priceEl.textContent = hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
         priceVatEl.textContent = hall.areaOnRequest ? '—' : `${fmt(SALE_PRICE_PER_M2)} Kč`;
-        if (priceLabelEl) priceLabelEl.textContent = 'Orientační cena';
+        if (priceLabelEl) priceLabelEl.textContent = 'Cena';
         if (priceVatLabelEl) priceVatLabelEl.textContent = 'Cena za m²';
     } else {
         priceEl.textContent = priceLabel(hall, false);
@@ -334,11 +333,7 @@ function openModal(hall) {
     }
 
     const noteEl = document.getElementById('modal-note');
-    if (noteEl) {
-        const showNote = mode === 'sale' && !hall.available;
-        noteEl.textContent = showNote ? 'Aktuálně pronajato — na prodej i se stávajícím nájemcem (zajímavé jako investice).' : '';
-        noteEl.hidden = !showNote;
-    }
+    if (noteEl) noteEl.hidden = true;
 
     document.getElementById('modal-description').textContent = hall.description;
     document.getElementById('mf-hall').value = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
