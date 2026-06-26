@@ -240,12 +240,12 @@ function renderListings() {
     const rentGrid = document.getElementById('pronajem-hal-grid');
 
     if (saleGrid) {
-        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => (b.area || 0) - (a.area || 0));
+        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => a.id - b.id);
         saleGrid.innerHTML = sale.map(h => hallCardHtml(h, 'sale')).join('');
     }
     if (rentGrid) {
         const rent = HALLS.filter(h => offerOf(h) === 'rent' && h.available)
-            .sort((a, b) => (b.area || 0) - (a.area || 0));
+            .sort((a, b) => a.id - b.id);
         rentGrid.innerHTML = rent.map(h => hallCardHtml(h, 'rent')).join('');
     }
 
