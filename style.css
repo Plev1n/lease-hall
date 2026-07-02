@@ -914,6 +914,9 @@ a.contact-detail__value:hover { color: var(--accent); }
     gap: 16px;
     margin-bottom: 24px;
 }
+.modal__stats--two {
+    grid-template-columns: repeat(2, 1fr);
+}
 .modal__stat {
     text-align: center;
     padding: 16px 12px;

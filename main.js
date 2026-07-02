@@ -25,29 +25,26 @@ const HALLS = [
     { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
     { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 8 },
     { id: 16, name: "Hala",                    type: "hala",      area: 1500, available: true,  description: "Dlouhá hala (cca 100 m). Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 8, plan: "hala-16" },
-    { id: 17, name: "Hala",                    type: "hala",      area: 225,  available: true,  description: "Hala 18,2 × 12,4 m, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 3, plan: "hala-17" },
+    { id: 17, name: "Hala",                    type: "hala",      area: 200,  available: true,  description: "Hala, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 3, plan: "hala-17" },
     { id: 18, name: "Hala",                    type: "hala",      area: 1875, available: true,  description: "Největší hala v areálu, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 10, plan: "hala-18" },
     { id: 19, name: "Hala",                    type: "hala",      area: 625,  available: true,  description: "Dvoupatrový objekt, max. výška 8,5 m (1. patro místy 2,5 m). Středně velká hala v centrální části areálu.", photos: 8, plan: "hala-19" },
     { id: 20, name: "Hala",                    type: "hala",      area: 800,  available: false, description: "Hala, max. výška 8,6 m, min. 6,5 m.", photos: 1, plan: "hala-20" },
-    { id: 21, name: "Hala",                    type: "hala",      area: 1400, available: true,  description: "Dvoupatrová hala — přízemí max. výška 8,2 m (min. 6,4 m), 1. patro max. výška 4,7 m. V severozápadní části areálu.", photos: 5, plan: "hala-21" },
-    // Additional halls — details na vyžádání
-    { id: 22.1, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor.", photos: 3 },
-    { id: 22.2, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor.", photos: 5 },
-    { id: 23, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor.", photos: 4 },
-    { id: 24, name: "Manipulační plocha",      type: "manipulační plocha", area: null, areaOnRequest: true, available: true, offer: 'rent', description: "Zpevněná manipulační plocha vhodná k parkování techniky či manipulaci s materiálem — rozměry a detaily na vyžádání.", photos: 3 },
-    { id: 26, name: "Hala",                    type: "hala",      area: null, areaOnRequest: true, available: true, description: "Halový prostor — rozměry a detaily na vyžádání.", photos: 7 },
-    { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 8 },
-    { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: null, areaOnRequest: true, available: true, description: "Ubytovací a kancelářské kapacity — rozměry a detaily na vyžádání.", photos: 7 },
+    { id: 21, name: "Hala",                    type: "hala",      area: 930,  available: true,  description: "Dvoupatrová hala — přízemí max. výška 8,2 m (min. 6,4 m), 1. patro max. výška 4,7 m. V severozápadní části areálu.", photos: 5, plan: "hala-21" },
+    // Additional halls
+    { id: 22.1, name: "Hala",                  type: "hala",      area: null, areaOnRequest: true, available: false, description: "Halový prostor s přilehlou zpevněnou manipulační plochou — rozměry a detaily na vyžádání.", photos: 6 },
+    { id: 22.2, name: "Hala",                  type: "hala",      area: 2817, available: true,  description: "Spojený halový prostor o celkové ploše 2 817 m².", photos: 12 },
+    { id: 23, name: "Hala",                    type: "hala",      area: 1517, available: false, description: "Halový prostor o ploše 1 517 m².", photos: 4 },
+    { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: 1651, available: true, description: "Ubytovací a kancelářské kapacity o ploše 1 651 m².", photos: 8 },
+    { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: 524,  available: true, description: "Ubytovací a kancelářské kapacity o ploše 524 m².", photos: 7 },
 ];
 
 const PRICE_PER_M2 = 100;       // CZK bez DPH (pronájem / měsíc)
 const PRICE_PER_M2_VAT = 121;   // CZK s DPH
-const SALE_PRICE_PER_M2 = 14000; // CZK / m² — orientační prodejní cena hal (#16+)
 
 // Pseudo-položka pro leteckou galerii celého areálu (assets/photos/areal/)
 const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled', photos: 8 };
 
-// Zařazení haly: id >= 16 → prodej, jinak pronájem. Výjimka přes hall.offer (#24 → 'rent').
+// Zařazení haly: id >= 16 → prodej, jinak pronájem (lze přebít přes hall.offer).
 function offerOf(hall) {
     return hall.offer || (hall.id >= 16 ? 'sale' : 'rent');
 }
@@ -170,7 +167,7 @@ function initMap() {
             if (offer === 'sale') {
                 tooltipArea.textContent = hall.areaOnRequest
                     ? 'Na prodej — cena na vyžádání'
-                    : `${fmt(hall.area)} m² — ${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+                    : `${fmt(hall.area)} m² — cena na vyžádání`;
             } else if (!hall.available) {
                 tooltipArea.textContent = 'Pronajato';
             } else {
@@ -205,7 +202,7 @@ function initMap() {
 // ── Hall Cards ──────────────────────────────
 function priceTag(hall, mode) {
     if (mode === 'sale') {
-        return hall.areaOnRequest ? 'cena na vyžádání' : `${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
+        return 'Cena na vyžádání';
     }
     return hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
 }
@@ -320,16 +317,20 @@ function openModal(hall) {
     const priceVatEl = document.getElementById('modal-price-vat');
     const priceLabelEl = document.getElementById('modal-price-label');
     const priceVatLabelEl = document.getElementById('modal-price-vat-label');
+    const statsEl = document.querySelector('.modal__stats');
+    const vatStat = priceVatEl.closest('.modal__stat');
     if (mode === 'sale') {
-        priceEl.textContent = hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * SALE_PRICE_PER_M2)} Kč`;
-        priceVatEl.textContent = hall.areaOnRequest ? '—' : `${fmt(SALE_PRICE_PER_M2)} Kč`;
+        priceEl.textContent = 'Cena na vyžádání';
         if (priceLabelEl) priceLabelEl.textContent = 'Cena';
-        if (priceVatLabelEl) priceVatLabelEl.textContent = 'Cena za m²';
+        if (vatStat) vatStat.hidden = true;
+        if (statsEl) statsEl.classList.add('modal__stats--two');
     } else {
         priceEl.textContent = priceLabel(hall, false);
         priceVatEl.textContent = priceLabel(hall, true);
         if (priceLabelEl) priceLabelEl.textContent = 'Měsíčně bez DPH';
         if (priceVatLabelEl) priceVatLabelEl.textContent = 'Měsíčně s DPH';
+        if (vatStat) vatStat.hidden = false;
+        if (statsEl) statsEl.classList.remove('modal__stats--two');
     }
 
     const noteEl = document.getElementById('modal-note');
