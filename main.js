@@ -49,6 +49,16 @@ function offerOf(hall) {
     return hall.offer || (hall.id >= 16 ? 'sale' : 'rent');
 }
 
+// Společné letecké/orientační snímky přidané do galerie KAŽDÉ haly na prodej (assets/aerials/).
+const SALE_AERIALS = [1, 2, 3, 4].map(i => ({
+    type: 'photo',
+    full: `assets/aerials/${i}.webp`,
+    fullJpg: `assets/aerials/${i}.jpg`,
+    thumb: `assets/aerials/${i}-thumb.webp`,
+    thumbJpg: `assets/aerials/${i}-thumb.jpg`,
+    alt: `Areál NORMA FnO, Frýdlant nad Ostravicí – letecký pohled a poloha haly na prodej ${i}`,
+}));
+
 // ── Config ──────────────────────────────────
 const RECAPTCHA_SITE_KEY = '6LfSj8EsAAAAANNN7x6Qgr5rCAdEc71ixh4rbxMj';
 const API_ENDPOINT = '/api/submit';
@@ -94,6 +104,10 @@ function galleryItems(hall) {
                     : `${hall.name} #${hall.id} – Areál NORMA FnO, Frýdlant nad Ostravicí – foto ${i}`,
             });
         }
+    }
+    // Letecké snímky u všech hal na prodej (za vlastními fotkami, před půdorysem)
+    if (offerOf(hall) === 'sale') {
+        items.push(...SALE_AERIALS);
     }
     if (hall.plan) {
         items.push({
