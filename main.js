@@ -287,8 +287,8 @@ function populateFormSelect() {
     if (!select) return;
 
     const arealOpt = document.createElement('option');
-    arealOpt.value = 'Celý areál (43 000 m²)';
-    arealOpt.textContent = 'Celý areál (43 000 m²)';
+    arealOpt.value = 'Celý areál (44 500 m²)';
+    arealOpt.textContent = 'Celý areál (44 500 m²)';
     select.appendChild(arealOpt);
 
     const addGroup = (label, halls) => {
