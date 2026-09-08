@@ -38,8 +38,10 @@ const HALLS = [
     { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: 524,  available: true, description: "Ubytovací a kancelářské kapacity o ploše 524 m².", photos: 7 },
 ];
 
-const PRICE_PER_M2 = 100;       // CZK bez DPH (pronájem / měsíc)
-const PRICE_PER_M2_VAT = 121;   // CZK s DPH
+// Orientační rozmezí nájmu; konkrétní cena vždy na vyžádání.
+const PRICE_PER_M2_MIN = 10;    // CZK/m² bez DPH (pronájem / měsíc)
+const PRICE_PER_M2_MAX = 100;   // CZK/m² bez DPH (pronájem / měsíc)
+const PRICE_ON_REQUEST = 'Cena na vyžádání';
 
 // Pseudo-položka pro leteckou galerii celého areálu (assets/photos/areal/)
 const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled', photos: 8 };
@@ -77,11 +79,6 @@ function areaLabel(hall) {
     return hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area)} m²`;
 }
 
-function priceLabel(hall, withVat = false) {
-    if (hall.areaOnRequest) return 'na vyžádání';
-    const rate = withVat ? PRICE_PER_M2_VAT : PRICE_PER_M2;
-    return `${fmt(hall.area * rate)} Kč`;
-}
 
 function photoUrl(hall, i, thumb = false, ext = 'webp') {
     return `assets/photos/${hall.id}/${i}${thumb ? '-thumb' : ''}.${ext}`;
@@ -186,8 +183,8 @@ function initMap() {
                 tooltipArea.textContent = 'Pronajato';
             } else {
                 tooltipArea.textContent = hall.areaOnRequest
-                    ? 'K pronájmu — na vyžádání'
-                    : `${fmt(hall.area)} m² — ${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
+                    ? 'K pronájmu — cena na vyžádání'
+                    : `${fmt(hall.area)} m² — cena na vyžádání`;
             }
             tooltip.classList.add('visible');
         });
@@ -215,10 +212,7 @@ function initMap() {
 
 // ── Hall Cards ──────────────────────────────
 function priceTag(hall, mode) {
-    if (mode === 'sale') {
-        return 'Cena na vyžádání';
-    }
-    return hall.areaOnRequest ? 'na vyžádání' : `${fmt(hall.area * PRICE_PER_M2)} Kč/měs.`;
+    return PRICE_ON_REQUEST;
 }
 
 function hallCardHtml(hall, mode) {
@@ -330,22 +324,12 @@ function openModal(hall) {
     const priceEl = document.getElementById('modal-price');
     const priceVatEl = document.getElementById('modal-price-vat');
     const priceLabelEl = document.getElementById('modal-price-label');
-    const priceVatLabelEl = document.getElementById('modal-price-vat-label');
     const statsEl = document.querySelector('.modal__stats');
-    const vatStat = priceVatEl.closest('.modal__stat');
-    if (mode === 'sale') {
-        priceEl.textContent = 'Cena na vyžádání';
-        if (priceLabelEl) priceLabelEl.textContent = 'Cena';
-        if (vatStat) vatStat.hidden = true;
-        if (statsEl) statsEl.classList.add('modal__stats--two');
-    } else {
-        priceEl.textContent = priceLabel(hall, false);
-        priceVatEl.textContent = priceLabel(hall, true);
-        if (priceLabelEl) priceLabelEl.textContent = 'Měsíčně bez DPH';
-        if (priceVatLabelEl) priceVatLabelEl.textContent = 'Měsíčně s DPH';
-        if (vatStat) vatStat.hidden = false;
-        if (statsEl) statsEl.classList.remove('modal__stats--two');
-    }
+    const vatStat = priceVatEl ? priceVatEl.closest('.modal__stat') : null;
+    priceEl.textContent = PRICE_ON_REQUEST;
+    if (priceLabelEl) priceLabelEl.textContent = mode === 'sale' ? 'Cena' : 'Nájem';
+    if (vatStat) vatStat.hidden = true;
+    if (statsEl) statsEl.classList.add('modal__stats--two');
 
     const noteEl = document.getElementById('modal-note');
     if (noteEl) noteEl.hidden = true;
