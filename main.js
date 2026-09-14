@@ -173,15 +173,20 @@ function initMap() {
     document.querySelectorAll('.building').forEach(g => {
         const id = parseFloat(g.dataset.hallId);
         const hall = getHall(id);
-        if (!hall) return;
+        if (!hall) {
+            // Obrys bez záznamu v HALLS (budova vyřazená z nabídky) — šedý a neaktivní,
+            // jinak by zdědil výchozí zelenou a tvářil se jako volný.
+            g.classList.add('is-none');
+            return;
+        }
 
+        // Mapa nerozlišuje prodej a pronájem — vše, co je v nabídce, je zeleně.
         const offer = offerOf(hall);
+        const inOffer = offer === 'sale' || hall.available;
         if (offer === 'none') {
             g.classList.add('is-none');
-        } else if (offer === 'sale') {
-            g.classList.add('is-sale');
-        } else if (hall.available) {
-            g.classList.add('is-rent');
+        } else if (inOffer) {
+            g.classList.add('is-available');
         } else {
             g.classList.add('unavailable');
         }
@@ -191,15 +196,11 @@ function initMap() {
             tooltipName.textContent = `${hall.name} ${hallLabel(hall)}`;
             if (offer === 'none') {
                 tooltipArea.textContent = 'Mimo nabídku';
-            } else if (offer === 'sale') {
-                tooltipArea.textContent = hall.areaOnRequest
-                    ? 'Na prodej — cena na vyžádání'
-                    : `${areaLabel(hall)} — cena na vyžádání`;
-            } else if (!hall.available) {
+            } else if (!inOffer) {
                 tooltipArea.textContent = 'Pronajato';
             } else {
                 tooltipArea.textContent = hall.areaOnRequest
-                    ? 'K pronájmu — cena na vyžádání'
+                    ? 'Cena na vyžádání'
                     : `${areaLabel(hall)} — cena na vyžádání`;
             }
             tooltip.classList.add('visible');
@@ -219,7 +220,7 @@ function initMap() {
 
         // Click to open modal
         g.addEventListener('click', () => {
-            if (offer !== 'none' && (hall.available || offer === 'sale')) {
+            if (offer !== 'none' && inOffer) {
                 openModal(hall);
             }
         });
