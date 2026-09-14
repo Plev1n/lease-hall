@@ -22,7 +22,9 @@ const HALLS = [
     // Hidden per request (2026-06-12):
     // { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
     { id: 13, name: "Hala a úpravna vody",     type: "hala",      area: 400,  available: false, description: "Hala s úpravnou vody — aktuálně pronajato." },
-    { id: 14, name: "Hala",                    type: "hala",      area: 1340, offer: "none", available: false, description: "Hala mimo nabídku — není k pronájmu ani na prodej.", photos: 3 },
+    { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
+    // Plán značí číslem 14 dvě budovy; tahle (715 m²) není v nabídce — na mapě jen šedá.
+    { id: 14.2, name: "Hala",                  type: "hala",      area: 715,  label: "#14", offer: "none", available: false, description: "Hala mimo nabídku — není k pronájmu ani na prodej." },
     { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 8 },
     { id: 16, name: "Hala",                    type: "hala",      area: 1500, available: true,  description: "Dlouhá hala (cca 100 m). Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 8, plan: "hala-16" },
     { id: 17, name: "Hala",                    type: "hala",      area: 200,  available: true,  description: "Hala, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 3, plan: "hala-17" },
@@ -74,6 +76,11 @@ function fmt(n) {
 function getHall(id) {
     if (id === 'areal') return AREAL_GALLERY;
     return HALLS.find(h => h.id === id);
+}
+
+// Budovu lze na plánu označit jinak než jejím id (dvě budovy sdílejí číslo 14).
+function hallLabel(hall) {
+    return hall.label || `#${hall.id}`;
 }
 
 function areaLabel(hall) {
@@ -180,7 +187,7 @@ function initMap() {
 
         // Hover tooltip
         g.addEventListener('mouseenter', (e) => {
-            tooltipName.textContent = `${hall.name} #${hall.id}`;
+            tooltipName.textContent = `${hall.name} ${hallLabel(hall)}`;
             if (offer === 'none') {
                 tooltipArea.textContent = 'Mimo nabídku';
             } else if (offer === 'sale') {
@@ -299,7 +306,7 @@ function populateFormSelect() {
         group.label = label;
         halls.forEach(hall => {
             const option = document.createElement('option');
-            const text = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
+            const text = `${hallLabel(hall)} — ${hall.name} (${areaLabel(hall)})`;
             option.value = text;
             option.textContent = text;
             group.appendChild(option);
@@ -326,7 +333,7 @@ function openModal(hall) {
     const overlay = document.getElementById('modal-overlay');
     const mode = offerOf(hall);
     document.getElementById('modal-type').textContent = getTypeLabel(hall.type);
-    document.getElementById('modal-title').textContent = `${hall.name} #${hall.id}`;
+    document.getElementById('modal-title').textContent = `${hall.name} ${hallLabel(hall)}`;
     document.getElementById('modal-area').textContent = areaLabel(hall);
 
     const priceEl = document.getElementById('modal-price');
@@ -343,7 +350,7 @@ function openModal(hall) {
     if (noteEl) noteEl.hidden = true;
 
     document.getElementById('modal-description').textContent = hall.description;
-    document.getElementById('mf-hall').value = `#${hall.id} — ${hall.name} (${areaLabel(hall)})`;
+    document.getElementById('mf-hall').value = `${hallLabel(hall)} — ${hall.name} (${areaLabel(hall)})`;
 
     // Photo gallery (+ floor plan as last item)
     const gallery = document.getElementById('modal-gallery');
