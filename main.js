@@ -34,9 +34,9 @@ const HALLS = [
     { id: 21, name: "Hala",                    type: "hala",      area: 930,  available: true,  description: "Dvoupatrová hala — přízemí max. výška 8,2 m (min. 6,4 m), 1. patro max. výška 4,7 m. V severozápadní části areálu.", photos: 5, plan: "hala-21" },
     // Additional halls
     { id: 22.1, name: "Hala",                  type: "hala",      area: 271,  available: false, description: "Halový prostor o ploše 271 m² s přilehlou zpevněnou manipulační plochou.", photos: 6 },
-    { id: 22.2, name: "Hala",                  type: "hala",      area: 202,  available: true,  description: "Halový prostor o ploše 202 m².", photos: 12 },
+    { id: 22.2, name: "Hala",                  type: "hala",      area: 202,  available: true,  description: "Halový prostor o ploše 202 m².", photos: 5 },
     { id: 23, name: "Hala",                    type: "hala",      area: 302,  available: false, description: "Halový prostor o ploše 302 m².", photos: 4 },
-    { id: 26, name: "Hala",                    type: "hala",      area: 440,  available: true,  description: "Halový prostor o ploše 440 m²." },
+    { id: 26, name: "Hala",                    type: "hala",      area: 440,  available: true,  description: "Halový prostor o ploše 440 m².", photos: 7 },
     { id: 35, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: 370,  available: true, description: "Ubytovací a kancelářské kapacity o ploše 370 m².", photos: 8 },
     { id: 36, name: "Ubytovací a kancelářské kapacity", type: "kanceláře", area: 160,  available: true, description: "Ubytovací a kancelářské kapacity o ploše 160 m².", photos: 7 },
 ];
