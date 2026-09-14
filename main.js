@@ -46,6 +46,9 @@ const PRICE_PER_M2_MIN = 10;    // CZK/m² bez DPH (pronájem / měsíc)
 const PRICE_PER_M2_MAX = 100;   // CZK/m² bez DPH (pronájem / měsíc)
 const PRICE_ON_REQUEST = 'Cena na vyžádání';
 
+// Musí přesně odpovídat data-prefill-hall u tlačítka „Poptat pozemek" v index.html.
+const POZEMEK_OPTION = 'Stavební pozemek (50–5 000 m²)';
+
 // Pseudo-položka pro leteckou galerii celého areálu (assets/photos/areal/)
 const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled', photos: 8 };
 
@@ -301,6 +304,11 @@ function populateFormSelect() {
     arealOpt.value = 'Celý areál (44 500 m²)';
     arealOpt.textContent = 'Celý areál (44 500 m²)';
     select.appendChild(arealOpt);
+
+    const pozemekOpt = document.createElement('option');
+    pozemekOpt.value = POZEMEK_OPTION;
+    pozemekOpt.textContent = POZEMEK_OPTION;
+    select.appendChild(pozemekOpt);
 
     const addGroup = (label, halls) => {
         if (!halls.length) return;

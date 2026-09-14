@@ -98,6 +98,7 @@ button, input, select, textarea {
     color: var(--accent);
 }
 .btn--full { width: 100%; justify-content: center; }
+.btn--sm { padding: 10px 18px; font-size: 0.875rem; }
 
 /* Section Header */
 .section-header {
@@ -432,6 +433,9 @@ button, input, select, textarea {
     color: var(--text-muted);
     font-size: 0.92rem;
     line-height: 1.55;
+}
+.feature__cta {
+    margin-top: 18px;
 }
 @media (max-width: 480px) {
     .features-section { padding: 70px 0; }
