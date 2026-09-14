@@ -22,7 +22,7 @@ const HALLS = [
     // Hidden per request (2026-06-12):
     // { id: 12, name: "Administrativní budova",  type: "kanceláře", area: 100,  available: true,  description: "Kompaktní administrativní budova v centru areálu." },
     { id: 13, name: "Hala a úpravna vody",     type: "hala",      area: 400,  available: false, description: "Hala s úpravnou vody — aktuálně pronajato." },
-    { id: 14, name: "Hala",                    type: "hala",      area: 1340, available: true,  description: "Velká halová plocha 1 340 m².", photos: 3 },
+    { id: 14, name: "Hala",                    type: "hala",      area: 1340, offer: "none", available: false, description: "Hala mimo nabídku — není k pronájmu ani na prodej.", photos: 3 },
     { id: 15, name: "Zastřešená plocha",        type: "zastřešená plocha", area: 1220, available: true, description: "Velká zastřešená plocha vhodná pro skladování materiálu nebo techniky.", photos: 8 },
     { id: 16, name: "Hala",                    type: "hala",      area: 1500, available: true,  description: "Dlouhá hala (cca 100 m). Prostorná plocha vhodná pro výrobu, skladování nebo logistiku.", photos: 8, plan: "hala-16" },
     { id: 17, name: "Hala",                    type: "hala",      area: 200,  available: true,  description: "Hala, max. výška 7 m, min. 5,3 m. Menší halový prostor v horní části areálu.", photos: 3, plan: "hala-17" },
@@ -47,6 +47,7 @@ const PRICE_ON_REQUEST = 'Cena na vyžádání';
 const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled', photos: 8 };
 
 // Zařazení haly: id >= 16 → prodej, jinak pronájem (lze přebít přes hall.offer).
+// hall.offer === 'none' → budova mimo nabídku: na mapě šedá, bez detailu i karty.
 function offerOf(hall) {
     return hall.offer || (hall.id >= 16 ? 'sale' : 'rent');
 }
@@ -167,7 +168,9 @@ function initMap() {
         if (!hall) return;
 
         const offer = offerOf(hall);
-        if (offer === 'sale') {
+        if (offer === 'none') {
+            g.classList.add('is-none');
+        } else if (offer === 'sale') {
             g.classList.add('is-sale');
         } else if (hall.available) {
             g.classList.add('is-rent');
@@ -178,7 +181,9 @@ function initMap() {
         // Hover tooltip
         g.addEventListener('mouseenter', (e) => {
             tooltipName.textContent = `${hall.name} #${hall.id}`;
-            if (offer === 'sale') {
+            if (offer === 'none') {
+                tooltipArea.textContent = 'Mimo nabídku';
+            } else if (offer === 'sale') {
                 tooltipArea.textContent = hall.areaOnRequest
                     ? 'Na prodej — cena na vyžádání'
                     : `${areaLabel(hall)} — cena na vyžádání`;
@@ -206,7 +211,7 @@ function initMap() {
 
         // Click to open modal
         g.addEventListener('click', () => {
-            if (hall.available || offer === 'sale') {
+            if (offer !== 'none' && (hall.available || offer === 'sale')) {
                 openModal(hall);
             }
         });

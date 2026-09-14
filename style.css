@@ -665,6 +665,20 @@ button, input, select, textarea {
 /* Map: prodej (amber) / pronájem (green, default) / pronajato (red, .unavailable) */
 .map-legend__swatch--sale { background: var(--accent-dim); border: 1.5px solid var(--accent); }
 .map-legend__swatch--rent { background: var(--green-dim); border: 1.5px solid var(--green); }
+.map-legend__swatch--none { background: rgba(113, 113, 122, 0.18); border: 1.5px solid rgba(113, 113, 122, 0.55); }
+
+/* Budova mimo nabídku — šedá, bez interakce */
+.building.is-none rect, .building.is-none polygon {
+    fill: rgba(113, 113, 122, 0.15);
+    stroke: rgba(113, 113, 122, 0.45);
+    stroke-width: 3;
+    cursor: default;
+}
+.building.is-none:hover rect, .building.is-none:hover polygon {
+    fill: rgba(113, 113, 122, 0.15);
+    stroke: rgba(113, 113, 122, 0.45);
+    stroke-width: 3;
+}
 .building.is-sale rect, .building.is-sale polygon {
     fill: rgba(245, 158, 11, 0.20);
     stroke: rgba(245, 158, 11, 0.7);
