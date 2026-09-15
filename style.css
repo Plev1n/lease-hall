@@ -567,6 +567,7 @@ button, input, select, textarea {
     letter-spacing: 0.05em;
 }
 .hall-card__name {
+    font-size: 1rem;
     font-weight: 600;
     margin-bottom: 4px;
 }
@@ -717,6 +718,72 @@ button, input, select, textarea {
     gap: 64px;
     align-items: start;
 }
+/* ── Lokalita + FAQ ─────────────────────── */
+.about-section {
+    padding: 100px 0;
+    background: var(--bg-surface);
+    border-top: 1px solid var(--border);
+}
+.about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 56px;
+    align-items: start;
+}
+.about__subtitle {
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    letter-spacing: -0.01em;
+    margin-bottom: 18px;
+}
+.about__text p {
+    color: var(--text-muted);
+    font-size: 1.02rem;
+    line-height: 1.7;
+    margin-bottom: 16px;
+}
+.about__text strong { color: var(--text); font-weight: 600; }
+.about__link { color: var(--accent); border-bottom: 1px solid var(--accent-dim); }
+.about__link:hover { color: var(--accent-hover); border-bottom-color: var(--accent); }
+.faq__item {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    transition: border-color var(--transition);
+}
+.faq__item[open], .faq__item:hover { border-color: var(--border-hover); }
+.faq__q {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    padding: 16px 20px;
+    font-weight: 600;
+    cursor: pointer;
+    list-style: none;
+}
+.faq__q::-webkit-details-marker { display: none; }
+.faq__q::after {
+    content: '+';
+    font-family: var(--font-mono);
+    color: var(--accent);
+    font-size: 1.2rem;
+    line-height: 1;
+    flex-shrink: 0;
+}
+.faq__item[open] .faq__q::after { content: '–'; }
+.faq__a {
+    padding: 0 20px 18px;
+    color: var(--text-muted);
+    font-size: 0.95rem;
+    line-height: 1.65;
+}
+@media (max-width: 900px) {
+    .about-section { padding: 72px 0; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+}
+
 .contact-info__text {
     color: var(--text-muted);
     font-size: 1.05rem;
@@ -1200,6 +1267,12 @@ a.contact-detail__value:hover { color: var(--accent); }
     background: var(--accent);
     color: #000;
     border-radius: 6px;
+}
+.footer__desc {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    max-width: 520px;
+    margin-bottom: 6px;
 }
 .footer__copy {
     font-size: 0.8rem;

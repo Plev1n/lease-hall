@@ -239,7 +239,7 @@ function hallCardHtml(hall, mode) {
     const cover = hall.photos
         ? `<div class="hall-card__cover"><picture>
                 <source type="image/webp" srcset="${photoUrl(hall, 1, true, 'webp')}">
-                <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} #${hall.id} — náhled" loading="lazy" decoding="async" class="hall-card__cover-img">
+                <img src="${photoUrl(hall, 1, true, 'jpg')}" alt="${hall.name} č. ${hall.id}, ${areaLabel(hall)} – ${mode === 'sale' ? 'prodej' : 'pronájem'}, Areál NORMA FnO, Frýdlant nad Ostravicí" loading="lazy" decoding="async" class="hall-card__cover-img">
            </picture></div>`
         : `<div class="hall-card__cover hall-card__cover--empty"></div>`;
     return `
@@ -250,7 +250,7 @@ function hallCardHtml(hall, mode) {
                 <span class="hall-card__number">${hall.id}</span>
                 <span class="hall-card__tag">${getTypeLabel(hall.type)}</span>
             </div>
-            <div class="hall-card__name">${hall.name}</div>
+            <h3 class="hall-card__name">${hall.name}</h3>
             <div class="hall-card__type">${hall.description}</div>
             <div class="hall-card__meta">
                 <span class="hall-card__area">${areaLabel(hall)}</span>
