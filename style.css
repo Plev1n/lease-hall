@@ -1162,6 +1162,9 @@ a.contact-detail__value:hover { color: var(--accent); }
     gap: 12px;
 }
 .modal-form__actions .btn { flex: 1; justify-content: center; }
+/* Číslo v tlačítku „Zavolat" — fallback pro desktop, kde tel: odkaz nic neudělá. */
+.btn__phone { font-variant-numeric: tabular-nums; white-space: nowrap; }
+.modal-form__actions .btn svg { flex-shrink: 0; }
 
 
 /* ============================================
