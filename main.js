@@ -15,7 +15,7 @@ const HALLS = [
     { id: 5,  name: "Jídelna",                type: "komerční",   area: 1600, available: true,  description: "Prostor bývalé jídelny — vhodný pro gastro provoz nebo komerční využití.", photos: 23 },
     { id: 6,  name: "Stolárna",               type: "dílna",      area: 120,  available: true,  description: "Dílenský prostor s historickým využitím jako stolárna.", photos: 7 },
     { id: 7,  name: "Administrativní budova",  type: "kanceláře", area: 80,   available: false, description: "Menší administrativní budova vhodná pro zázemí firmy — aktuálně pronajato.", photos: 1 },
-    { id: 8,  name: "3 patrová budova",        type: "kanceláře", area: 350,  available: true,  description: "Třípatrová budova s kancelářskými prostory na každém patře.", photos: 5 },
+    { id: 8,  name: "3 patrová budova",        type: "kanceláře", area: 200,  available: true,  description: "Třípatrová budova s kancelářskými prostory na každém patře.", photos: 5 },
     { id: 9,  name: "2 patrová hala",          type: "hala",      area: 532.5, available: true,  description: "Dvoupatrová hala 35,8 × 14,8 m (532,5 m² na patro). Přízemí: max. výška 4 m. 1. patro: max. výška 3,6 m.", photos: 4, plan: "hala-9" },
     { id: 10, name: "Hala",                    type: "hala",      area: 570,  available: true,  description: "Hala 38,2 × 14,9 m, max. výška 7,5 m, min. 4 m. Halová plocha v centrální části areálu.", photos: 3, plan: "hala-10" },
     { id: 11, name: "Hala",                    type: "hala",      area: 800,  available: false, description: "Hala spojená s objektem č. 13, max. výška 5,8 m, min. 3,8 m — aktuálně pronajato.", plan: "hala-11" },
