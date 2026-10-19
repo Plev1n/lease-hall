@@ -31,7 +31,7 @@ const HALLS = [
     { id: 18, name: "Hala",                    type: "hala",      area: 1875, available: true,  description: "Největší hala v areálu, max. výška 8,6 m, min. 6 m. Přízemí + 1. patro (cca 250 m² kancelářského zázemí). Ideální pro velkovýrobu nebo centrální sklad.", photos: 10, plan: "hala-18" },
     { id: 19, name: "Hala",                    type: "hala",      area: 625,  available: true,  description: "Dvoupatrový objekt, max. výška 8,5 m (1. patro místy 2,5 m). Středně velká hala v centrální části areálu.", photos: 8, plan: "hala-19" },
     { id: 20, name: "Hala",                    type: "hala",      area: 800,  available: false, description: "Hala, max. výška 8,6 m, min. 6,5 m.", photos: 1, plan: "hala-20" },
-    { id: 21, name: "Hala",                    type: "hala",      area: 930,  available: true,  description: "Dvoupatrová hala — přízemí max. výška 8,2 m (min. 6,4 m), 1. patro max. výška 4,7 m. V severozápadní části areálu.", photos: 5, plan: "hala-21" },
+    { id: 21, name: "Hala",                    type: "hala",      area: 1400, available: true,  description: "Dvoupatrová hala — přízemí max. výška 8,2 m (min. 6,4 m), 1. patro max. výška 4,7 m. V severozápadní části areálu.", photos: 5, plan: "hala-21" },
     // Additional halls
     { id: 22.1, name: "Hala",                  type: "hala",      area: 271,  available: false, description: "Halový prostor o ploše 271 m² s přilehlou zpevněnou manipulační plochou.", photos: 6 },
     { id: 22.2, name: "Hala",                  type: "hala",      area: 202,  available: true,  description: "Halový prostor o ploše 202 m².", photos: 5 },
