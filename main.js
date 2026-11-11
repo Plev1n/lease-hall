@@ -11,10 +11,10 @@ const HALLS = [
     // { id: 1,  name: "Administrativní budova", type: "kanceláře", area: 120,  available: true,  description: "Kancelářské prostory v administrativní budově u vstupu do areálu." },
     { id: 2,  name: "Trafo stanice",          type: "technické",  area: 50,   available: false, description: "Technický objekt — trafostanice." },
     { id: 3,  name: "Garáže",                 type: "garáže",     area: 150,  units: 3, unitArea: 50, available: true,  description: "Tři volné garáže po 50 m² — tři zleva. Vhodné pro parkování a drobné skladování.", photos: 2 },
-    { id: 4,  name: "Hala",                   type: "hala",       area: 500,  available: false, description: "Velká halová plocha vhodná pro výrobu, skladování nebo logistiku — aktuálně pronajato.", photos: 11 },
+    { id: 4,  name: "Hala",                   type: "hala",       area: 500,  offer: "both", available: true,  description: "Velká halová plocha vhodná pro výrobu, skladování nebo logistiku — k prodeji i k pronájmu.", photos: 11 },
     { id: 5,  name: "Jídelna",                type: "komerční",   area: 1600, available: true,  description: "Prostor bývalé jídelny — vhodný pro gastro provoz nebo komerční využití.", photos: 23 },
     { id: 6,  name: "Stolárna",               type: "dílna",      area: 120,  available: true,  description: "Dílenský prostor s historickým využitím jako stolárna.", photos: 7 },
-    { id: 7,  name: "Administrativní budova",  type: "kanceláře", area: 80,   available: false, description: "Menší administrativní budova vhodná pro zázemí firmy — aktuálně pronajato.", photos: 1 },
+    { id: 7,  name: "Administrativní budova",  type: "kanceláře", area: 80,   offer: "both", available: true,  description: "Menší administrativní budova vhodná pro zázemí firmy — k prodeji i k pronájmu.", photos: 1 },
     { id: 8,  name: "3 patrová budova",        type: "kanceláře", area: 200,  available: true,  description: "Třípatrová budova s kancelářskými prostory na každém patře.", photos: 5 },
     { id: 9,  name: "2 patrová hala",          type: "hala",      area: 532.5, available: true,  description: "Dvoupatrová hala 35,8 × 14,8 m (532,5 m² na patro). Přízemí: max. výška 4 m. 1. patro: max. výška 3,6 m.", photos: 4, plan: "hala-9" },
     { id: 10, name: "Hala",                    type: "hala",      area: 570,  available: true,  description: "Hala 38,2 × 14,9 m, max. výška 7,5 m, min. 4 m. Halová plocha v centrální části areálu.", photos: 3, plan: "hala-10" },
@@ -54,9 +54,12 @@ const AREAL_GALLERY = { id: 'areal', name: 'Areál NORMA FnO — letecký pohled
 
 // Zařazení haly: id >= 16 → prodej, jinak pronájem (lze přebít přes hall.offer).
 // hall.offer === 'none' → budova mimo nabídku: na mapě šedá, bez detailu i karty.
+// hall.offer === 'both' → hala je zároveň na prodej i k pronájmu (v obou sekcích).
 function offerOf(hall) {
     return hall.offer || (hall.id >= 16 ? 'sale' : 'rent');
 }
+const isForSale = hall => ['sale', 'both'].includes(offerOf(hall));
+const isForRent = hall => ['rent', 'both'].includes(offerOf(hall)) && hall.available;
 
 // Společné letecké/orientační snímky přidané do galerie KAŽDÉ haly na prodej (assets/aerials/).
 const SALE_AERIALS = [1, 2, 3, 4].map(i => ({
@@ -118,7 +121,7 @@ function galleryItems(hall) {
         }
     }
     // Letecké snímky u všech hal na prodej (za vlastními fotkami, před půdorysem)
-    if (offerOf(hall) === 'sale') {
+    if (isForSale(hall)) {
         items.push(...SALE_AERIALS);
     }
     if (hall.plan) {
@@ -185,7 +188,7 @@ function initMap() {
 
         // Mapa nerozlišuje prodej a pronájem — vše, co je v nabídce, je zeleně.
         const offer = offerOf(hall);
-        const inOffer = offer === 'sale' || hall.available;
+        const inOffer = isForSale(hall) || hall.available;
         if (offer === 'none') {
             g.classList.add('is-none');
         } else if (inOffer) {
@@ -265,11 +268,11 @@ function renderListings() {
     const rentGrid = document.getElementById('pronajem-hal-grid');
 
     if (saleGrid) {
-        const sale = HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => a.id - b.id);
+        const sale = HALLS.filter(isForSale).sort((a, b) => a.id - b.id);
         saleGrid.innerHTML = sale.map(h => hallCardHtml(h, 'sale')).join('');
     }
     if (rentGrid) {
-        const rent = HALLS.filter(h => offerOf(h) === 'rent' && h.available)
+        const rent = HALLS.filter(isForRent)
             .sort((a, b) => a.id - b.id);
         rentGrid.innerHTML = rent.map(h => hallCardHtml(h, 'rent')).join('');
     }
@@ -324,8 +327,8 @@ function populateFormSelect() {
         select.appendChild(group);
     };
 
-    addGroup('Prodej hal', HALLS.filter(h => offerOf(h) === 'sale').sort((a, b) => a.id - b.id));
-    addGroup('Pronájem hal', HALLS.filter(h => offerOf(h) === 'rent' && h.available).sort((a, b) => a.id - b.id));
+    addGroup('Prodej hal', HALLS.filter(isForSale).sort((a, b) => a.id - b.id));
+    addGroup('Pronájem hal', HALLS.filter(isForRent).sort((a, b) => a.id - b.id));
 }
 
 // "Poptat areál" CTA → předvybere "Celý areál" v kontaktním formuláři
@@ -352,7 +355,7 @@ function openModal(hall) {
     const statsEl = document.querySelector('.modal__stats');
     const vatStat = priceVatEl ? priceVatEl.closest('.modal__stat') : null;
     priceEl.textContent = PRICE_ON_REQUEST;
-    if (priceLabelEl) priceLabelEl.textContent = mode === 'sale' ? 'Cena' : 'Nájem';
+    if (priceLabelEl) priceLabelEl.textContent = mode === 'sale' ? 'Cena' : mode === 'both' ? 'Cena / nájem' : 'Nájem';
     if (vatStat) vatStat.hidden = true;
     if (statsEl) statsEl.classList.add('modal__stats--two');
 
